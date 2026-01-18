@@ -257,6 +257,7 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
         // ==========================================
         // 1. FIREBASE CONFIGURATION
         // ==========================================
@@ -299,17 +300,17 @@
             }
         });
 
-        function showSignUp() {
+        window.showSignUp = function() {
             document.getElementById('loginForm').classList.remove('active');
             document.getElementById('signupForm').classList.add('active');
         }
-        function showLogin() {
+        window.showLogin = function() {
             document.getElementById('signupForm').classList.remove('active');
             document.getElementById('loginForm').classList.add('active');
         }
 
         // --- NEW: PASSWORD TOGGLE FUNCTION ---
-        function togglePassword(inputId) {
+         window.togglePassword = function(inputId) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
                 input.type = "text";
@@ -491,6 +492,7 @@
         
         async function gameWon() {
             clearInterval(timerInterval);
+    
             
             try {
                 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -525,6 +527,7 @@
             document.getElementById('msgBody').innerText = body;
             document.getElementById('messageBox').style.display = 'block';
         }
+    });
     </script>
 </body>
 </html>
