@@ -400,7 +400,7 @@
         const gameGrid = document.getElementById('gameGrid');
         const timerDisplay = document.getElementById('timer');
         const overlay = document.getElementById('gameOverlay');
-        
+        let isGameActive = false;
         let cards = [], hasFlippedCard = false, lockBoard = false;
         let firstCard, secondCard, matchedPairs = 0, timerInterval;
         const totalPairs = 32; 
@@ -409,6 +409,8 @@
                         '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
 
         function startGame() {
+            isGameActive = true;
+            gameGrid.style.pointerEvents = 'auto';
             overlay.classList.add('active');
             gameGrid.innerHTML = '';
             matchedPairs = 0;
@@ -435,6 +437,9 @@
         }
 
         function flipCard() {
+            if (!isGameActive) return; 
+            if (lockBoard) return;
+            if (this === firstCard) return;
             if (lockBoard || this === firstCard) return;
             this.classList.add('flipped');
 
@@ -517,9 +522,11 @@
         }
 
         function gameLost() {
-            clearInterval(timerInterval);
+           clearInterval(timerInterval);
+            isGameActive = false; // ১. গেম লজিক বন্ধ
+            gameGrid.style.pointerEvents = 'none'; // ২. মাউস ক্লিক পুরোপুরি ডিজেবল (নিরাপত্তার জন্য)
             showMessage("Game Over", "Time ran out.");
-            auth.signOut(); 
+            auth.signOut();
         }
 
         function showMessage(title, body) {
