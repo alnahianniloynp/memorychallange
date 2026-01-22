@@ -18,15 +18,12 @@
         align-items: center; 
         min-height: 100vh; 
         background-color: #1a1a1a; 
-        /* CHANGED: Allow scrolling on mobile if content is too tall */
         overflow-y: auto; 
         overflow-x: hidden;
         user-select: none; 
-        /* Fix for mobile tap highlight color */
         -webkit-tap-highlight-color: transparent;
     }
 
-    /* --- LAYOUT CONTAINER --- */
     .container { 
         position: relative; 
         display: flex; 
@@ -34,7 +31,6 @@
         gap: 20px; 
         padding-bottom: 50px; 
         z-index: 1; 
-        /* Ensure container fits within view but allows scroll */
         min-height: 100vh;
         width: 100%;
         justify-content: center;
@@ -47,15 +43,11 @@
     .lamp-head-wrapper { position: absolute; bottom: 230px; left: 50%; transform: translateX(-50%); width: 180px; height: 250px; z-index: 4; }
     .lamp-shade { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, #eaddcf, #fff8dc, #eaddcf); z-index: 5; }
     
-    /* Touch target for string - made invisible area larger for easier tapping on mobile */
     .lamp-string { 
         position: absolute; bottom: -80px; left: 50%; transform: translateX(-40px); 
         width: 4px; height: 80px; border-left: 3px dotted #b8860b; z-index: 1; cursor: pointer; 
     }
-    /* Add an invisible wider click area for the string */
-    .lamp-string::before {
-        content: ''; position: absolute; top: 0; left: -20px; width: 40px; height: 100%; z-index: 10;
-    }
+    .lamp-string::before { content: ''; position: absolute; top: 0; left: -20px; width: 40px; height: 100%; z-index: 10; }
     .lamp-string::after { content: ''; position: absolute; bottom: -12px; left: -8px; width: 16px; height: 16px; background: radial-gradient(circle, #ffd700, #b8860b); border-radius: 50%; }
 
     .lamp-light { position: absolute; top: 240px; left: -20px; width: 220px; height: 300px; background: linear-gradient(to bottom, rgba(255, 223, 150, 0.5) 0%, rgba(255, 223, 150, 0) 80%); clip-path: polygon(20% 0, 80% 0, 100% 100%, 0% 100%); opacity: 0; transition: opacity 0.3s; z-index: 20; pointer-events: none; mix-blend-mode: screen; }
@@ -70,9 +62,7 @@
         position: relative; width: 350px; background: rgba(40, 40, 40, 0.95);
         border-radius: 10px; box-shadow: 0 15px 25px rgba(0,0,0,0.5); border: 1px solid #333;
         z-index: 5; opacity: 0; visibility: hidden; transform: translateY(20px);
-        transition: all 0.4s ease; overflow: hidden;
-        /* Ensure form doesn't get cut off on small screens */
-        margin-bottom: 20px; 
+        transition: all 0.4s ease; overflow: hidden; margin-bottom: 20px; 
     }
 
     .auth-container.show { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -85,26 +75,20 @@
     .user-box input { width: 100%; padding: 10px 0; font-size: 16px; color: #fff; border: none; border-bottom: 1px solid #fff; outline: none; background: transparent; }
     .user-box label { position: absolute; top: 0; left: 0; padding: 10px 0; font-size: 16px; color: #fff; pointer-events: none; transition: .5s; }
     .user-box input:focus ~ label, .user-box input:valid ~ label { top: -20px; left: 0; color: #03e9f4; font-size: 12px; }
-
-    /* Password Toggle Icon */
     .password-toggle { position: absolute; top: 5px; right: 0; cursor: pointer; filter: invert(1); opacity: 0.7; width: 20px; height: 20px; }
-    .password-toggle:hover { opacity: 1; }
-
     .btn { position: relative; display: block; padding: 10px 20px; color: #03e9f4; font-size: 16px; text-transform: uppercase; letter-spacing: 4px; text-align: center; text-decoration: none; border: 1px solid #03e9f4; background: transparent; cursor: pointer; transition: .5s; width: 100%; margin-top: 20px; }
     .btn:hover { background: #03e9f4; color: #fff; box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4; }
     .toggle-text { margin-top: 15px; color: #fff; font-size: 12px; text-align: center; cursor: pointer; text-decoration: underline; }
-    .toggle-text:hover { color: #03e9f4; }
 
     /* --- GAME OVERLAY --- */
-    #gameOverlay {
+    #gameOverlay, #leaderboardOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.95); z-index: 100;
         display: flex; flex-direction: column; justify-content: center; align-items: center;
         opacity: 0; pointer-events: none; transition: opacity 0.5s;
-        /* Prevent scroll on body when game is open */
         touch-action: none;
     }
-    #gameOverlay.active { opacity: 1; pointer-events: all; }
+    #gameOverlay.active, #leaderboardOverlay.active { opacity: 1; pointer-events: all; }
     
     .game-header { color: #fff; margin-bottom: 10px; text-align: center; width: 100%; padding: 0 10px; }
     .timer { font-size: 2rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; }
@@ -112,8 +96,8 @@
     .memory-grid {
         display: grid; 
         grid-template-columns: repeat(8, 1fr); 
-        gap: 4px; /* Default gap */
-        width: 95vmin; /* Use almost full viewport min-dimension */
+        gap: 4px; 
+        width: 95vmin; 
         height: 95vmin; 
         max-width: 600px; 
         max-height: 600px;
@@ -127,12 +111,24 @@
     .card-front, .card-back { 
         position: absolute; width: 100%; height: 100%; 
         backface-visibility: hidden; display: flex; justify-content: center; align-items: center; 
-        font-size: 1.5rem; /* Default size */
-        border-radius: 2px; /* Smaller radius for tight grid */
+        font-size: 1.5rem; 
+        border-radius: 2px; 
         box-shadow: 0 0 2px rgba(3, 233, 244, 0.5); 
     }
     .card-front { background-color: #222; border: 1px solid #333; }
     .card-back { background-color: #03e9f4; color: #000; transform: rotateY(180deg); border: 1px solid #03e9f4; }
+
+    /* LEADERBOARD STYLES */
+    .leaderboard-box {
+        background: #222; border: 1px solid #03e9f4;
+        padding: 20px; border-radius: 10px;
+        width: 90%; max-width: 400px; text-align: center;
+        max-height: 80vh; overflow-y: auto;
+    }
+    .leaderboard-box h2 { color: #03e9f4; }
+    .lb-table { width: 100%; margin-top: 10px; color: #fff; border-collapse: collapse; }
+    .lb-table th, .lb-table td { padding: 8px; border-bottom: 1px solid #444; text-align: left; }
+    .lb-table th { color: #aaa; font-size: 0.9em; }
 
     /* Message Box */
     #messageBox {
@@ -143,38 +139,12 @@
     #messageBox h3 { color: #333; margin-bottom: 10px; }
     #messageBox button { margin-top: 10px; padding: 8px 16px; cursor: pointer; background: #333; color: #fff; border: none; border-radius: 4px; }
 
-    /* --- MOBILE OPTIMIZATION --- */
     @media (max-width: 600px) {
-        .container {
-            flex-direction: column; /* Stack Lamp on top of Form */
-            align-items: center;
-            justify-content: flex-start; /* Start from top */
-            padding-top: 20px;
-            padding-bottom: 100px; /* Space for scrolling past form */
-        }
-        
-        .lamp-wrapper {
-            transform: scale(0.65); /* Shrink lamp significantly */
-            height: 350px; /* Reduce visual height space */
-            margin-bottom: -50px; /* Pull form up closer to lamp */
-        }
-
-        .auth-container {
-            width: 90%; /* Responsive width */
-            max-width: 350px;
-        }
-
-        /* Adjust Grid for tiny screens */
-        .memory-grid {
-            gap: 2px; /* Tiny gap to maximize card size */
-            width: 98vw; /* Use full width */
-            height: 98vw; /* Keep it square */
-        }
-        
-        .card-front, .card-back {
-            font-size: 0.9rem; /* Smaller emoji font */
-            border-width: 1px;
-        }
+        .container { flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; padding-bottom: 100px; }
+        .lamp-wrapper { transform: scale(0.65); height: 350px; margin-bottom: -50px; }
+        .auth-container { width: 90%; max-width: 350px; }
+        .memory-grid { gap: 2px; width: 98vw; height: 98vw; }
+        .card-front, .card-back { font-size: 0.9rem; border-width: 1px; }
     }
 </style>
 </head>
@@ -192,7 +162,6 @@
         </div>
 
         <div class="auth-container" id="authContainer">
-            
             <div class="form-box active" id="loginForm">
                 <h2>Login</h2>
                 <form id="form-signin">
@@ -244,48 +213,63 @@
     <div id="gameOverlay">
         <div class="game-header">
             <h2>Memory Game</h2>
-            <p>Challenge yourself! Match all 32 pairs to show off your sharp memory and grab a reward!</p>
-            <div class="timer" id="timer">5:00</div>
+            <p>Challange yourself! Match all 32 pairs to show off your sharp memory and grab a reward
+                <b><font color="red">1000</font></b> taka ! 
+            </p>
+            <div class="timer" id="timer">05:00</div>
         </div>
         <div class="memory-grid" id="gameGrid"></div>
+    </div>
+
+    <div id="leaderboardOverlay">
+        <div class="leaderboard-box">
+            <h2>🏆 Winners Board 🏆</h2>
+            <p>Recent Champions</p>
+            <table class="lb-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardList">
+                    <tr><td colspan="2">Loading...</td></tr>
+                </tbody>
+            </table>
+            <button class="btn" style="margin-top:20px; border-color:#fff; color:#fff;" onclick="location.reload()">LOGOUT</button>
+        </div>
     </div>
 
     <div id="messageBox">
         <h3 id="msgTitle">Title</h3>
         <p id="msgBody">Body</p>
-        <button onclick="location.reload()">OK</button>
+        <button id="msgBtn" onclick="handleMsgBtn()">OK</button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        // ==========================================
-        // 1. FIREBASE CONFIGURATION
-        // ==========================================
+        // --- FIREBASE SETUP ---
         const firebaseConfig = {
-        apiKey: "AIzaSyAGDV6rmZgUSxZUzgj_yI3K5xlUuZINbpI",
-        authDomain: "memorychallange-3b80f.firebaseapp.com",
-        projectId: "memorychallange-3b80f",
-        storageBucket: "memorychallange-3b80f.firebasestorage.app",
-        messagingSenderId: "572401506079",
-        appId: "1:572401506079:web:96d5524cd58e7d31e6422a",
-        measurementId: "G-LY1VR65NLV"
+            apiKey: "AIzaSyAGDV6rmZgUSxZUzgj_yI3K5xlUuZINbpI",
+            authDomain: "memorychallange-3b80f.firebaseapp.com",
+            projectId: "memorychallange-3b80f",
+            storageBucket: "memorychallange-3b80f.firebasestorage.app",
+            messagingSenderId: "572401506079",
+            appId: "1:572401506079:web:96d5524cd58e7d31e6422a",
+            measurementId: "G-LY1VR65NLV"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // ==========================================
-        // 2. UI UTILITIES
-        // ==========================================
+        // --- UI VARS ---
         const lamp = document.getElementById('lamp');
         const pullString = document.getElementById('pullString');
         const authContainer = document.getElementById('authContainer');
         let isLampOn = false;
 
-        // Lamp Toggle
+        // --- LAMP LOGIC ---
         pullString.addEventListener('click', () => {
             pullString.classList.add('pull-action');
             setTimeout(() => pullString.classList.remove('pull-action'), 400);
@@ -300,120 +284,80 @@
             }
         });
 
-        window.showSignUp = function() {
-            document.getElementById('loginForm').classList.remove('active');
-            document.getElementById('signupForm').classList.add('active');
-        }
-        window.showLogin = function() {
-            document.getElementById('signupForm').classList.remove('active');
-            document.getElementById('loginForm').classList.add('active');
-        }
+        window.showSignUp = () => { document.getElementById('loginForm').classList.remove('active'); document.getElementById('signupForm').classList.add('active'); }
+        window.showLogin = () => { document.getElementById('signupForm').classList.remove('active'); document.getElementById('loginForm').classList.add('active'); }
+        window.togglePassword = (id) => { const x = document.getElementById(id); x.type = x.type === "password" ? "text" : "password"; }
 
-        // --- NEW: PASSWORD TOGGLE FUNCTION ---
-         window.togglePassword = function(inputId) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-            } else {
-                input.type = "password";
-            }
-        }
-
-        // ==========================================
-        // 3. AUTHENTICATION & RESTRICTION
-        // ==========================================
-        
-        // SIGN UP
+        // --- AUTH ---
         document.getElementById('form-signup').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('su-email').value;
-            const pass = document.getElementById('su-password').value;
-            const name = document.getElementById('su-name').value;
-            const dob = document.getElementById('su-dob').value;
-            const mobile = document.getElementById('su-mobile').value;
-
             try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-                await db.collection('users').doc(userCredential.user.uid).set({
-                    name: name, dob: dob, mobile: mobile, email: email,
+                const cred = await auth.createUserWithEmailAndPassword(
+                    document.getElementById('su-email').value,
+                    document.getElementById('su-password').value
+                );
+                await db.collection('users').doc(cred.user.uid).set({
+                    name: document.getElementById('su-name').value,
+                    mobile: document.getElementById('su-mobile').value,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: null // Initialize as null
+                    lastLogin: null
                 });
-
-                alert("Registration Successful! Please Login.");
+                alert("Registered! Please Login.");
                 showLogin();
-                document.getElementById('form-signup').reset();
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
+                e.target.reset();
+            } catch (err) { alert(err.message); }
         });
 
-        // SIGN IN WITH 12-HOUR CHECK
         let currentUserUid = null;
         let currentUserData = null;
 
         document.getElementById('form-signin').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('li-email').value;
-            const pass = document.getElementById('li-password').value;
-
             try {
-                // 1. Verify Credentials
-                const userCredential = await auth.signInWithEmailAndPassword(email, pass);
-                currentUserUid = userCredential.user.uid;
+                const cred = await auth.signInWithEmailAndPassword(
+                    document.getElementById('li-email').value,
+                    document.getElementById('li-password').value
+                );
+                currentUserUid = cred.user.uid;
+                const doc = await db.collection('users').doc(currentUserUid).get();
+                if (!doc.exists) return alert("User missing");
+                
+                currentUserData = doc.data();
 
-                // 2. Fetch User Data
-                const userDoc = await db.collection('users').doc(currentUserUid).get();
-                if (!userDoc.exists) {
-                    alert("User record missing.");
-                    return;
-                }
-
-                currentUserData = userDoc.data();
-
-                // 3. --- CHECK 12 HOUR RESTRICTION ---
+                // 12 HOUR CHECK
                 if (currentUserData.lastLogin) {
-                    const lastLoginDate = currentUserData.lastLogin.toDate();
-                    const now = new Date();
-                    const diffMs = now - lastLoginDate;
-                    const hoursPassed = diffMs / (1000 * 60 * 60);
-
-                    if (hoursPassed < 12) {
-                        const remaining = (12 - hoursPassed).toFixed(1);
-                        alert(`ACCESS DENIED. \n\nYou last accessed the system ${hoursPassed.toFixed(1)} hours ago.\nYou must wait ${remaining} more hours.`);
-                        auth.signOut(); // Log them out
-                        return; // STOP HERE
+                    const diff = (new Date() - currentUserData.lastLogin.toDate()) / (1000 * 60 * 60);
+                    if (diff < 12) {
+                        alert(`ACCESS DENIED. Wait ${(12 - diff).toFixed(1)} more hours.`);
+                        auth.signOut();
+                        return;
                     }
                 }
-
-                // 4. If > 12 hours or first time, start game
                 startGame();
-
-            } catch (error) {
-                alert("Login Failed: " + error.message);
-            }
+            } catch (err) { alert("Login Failed: " + err.message); }
         });
 
-        // ==========================================
-        // 4. GAME LOGIC
-        // ==========================================
+        // --- GAME LOGIC ---
         const gameGrid = document.getElementById('gameGrid');
         const timerDisplay = document.getElementById('timer');
-        const overlay = document.getElementById('gameOverlay');
-        let isGameActive = false;
-        let cards = [], hasFlippedCard = false, lockBoard = false;
+        let isGameActive = false, cards = [], hasFlippedCard = false, lockBoard = false;
         let firstCard, secondCard, matchedPairs = 0, timerInterval;
-        const totalPairs = 32; 
+        let consecutiveWrong = 0; 
+        let wrongGuessCards = new Set();
+        const totalPairs = 32;
 
         const emojis = ['🚀','🌙','⭐','🍎','🚗','🎈','🐱','🐶','🐸','🐼','🐯','🦁','⚽','🏀','🎾','🎱',
                         '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
 
         function startGame() {
             isGameActive = true;
+            document.getElementById('gameOverlay').classList.add('active');
+            document.getElementById('messageBox').style.display = 'none';
             gameGrid.style.pointerEvents = 'auto';
-            overlay.classList.add('active');
             gameGrid.innerHTML = '';
             matchedPairs = 0;
+            consecutiveWrong = 0;
+            wrongGuessCards.clear();
             
             const deck = [...emojis, ...emojis];
             shuffle(deck);
@@ -426,7 +370,7 @@
                 gameGrid.appendChild(card);
             });
 
-            startTimer(300);
+            startTimer(300); // 5 Minutes
         }
 
         function shuffle(array) {
@@ -437,10 +381,7 @@
         }
 
         function flipCard() {
-            if (!isGameActive) return; 
-            if (lockBoard) return;
-            if (this === firstCard) return;
-            if (lockBoard || this === firstCard) return;
+            if (!isGameActive || lockBoard || this === firstCard) return;
             this.classList.add('flipped');
 
             if (!hasFlippedCard) {
@@ -452,13 +393,26 @@
 
         function checkForMatch() {
             let isMatch = firstCard.querySelector('.card-back').innerText === secondCard.querySelector('.card-back').innerText;
-            isMatch ? disableCards() : unflipCards();
+            
+            if (isMatch) {
+                consecutiveWrong = 0;
+                wrongGuessCards.clear();
+                disableCards();
+            } else {
+                consecutiveWrong++; 
+                wrongGuessCards.add(firstCard);
+                wrongGuessCards.add(secondCard);
+                unflipCards();
+            }
         }
 
         function disableCards() {
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
-            setTimeout(() => { firstCard.style.visibility = "hidden"; secondCard.style.visibility = "hidden"; }, 500);
+            setTimeout(() => { 
+                firstCard.style.visibility = "hidden"; 
+                secondCard.style.visibility = "hidden"; 
+            }, 500);
             matchedPairs++;
             resetBoard();
             if (matchedPairs === totalPairs) gameWon();
@@ -466,11 +420,45 @@
 
         function unflipCards() {
             lockBoard = true;
+            
+            // Wait 1s for user to see the wrong cards
             setTimeout(() => {
                 firstCard.classList.remove('flipped');
                 secondCard.classList.remove('flipped');
-                resetBoard();
+                
+                // --- TRICKY SHUFFLE LOGIC ---
+                // If 3 wrong pairs consecutively (6 cards flipped)
+                if (consecutiveWrong >= 3) {
+                    // CRITICAL CHANGE: Wait another 600ms for the cards to finish rotating face down
+                    // This ensures the shuffle is INVISIBLE to the user
+                    setTimeout(() => {
+                        shuffleSpecificCards();
+                        consecutiveWrong = 0;
+                        wrongGuessCards.clear();
+                        resetBoard(); // Unlock ONLY after shuffle is done
+                    }, 600); 
+                } else {
+                    // Normal case: unlock immediately after starting to unflip
+                    resetBoard();
+                }
+
             }, 1000);
+        }
+
+        function shuffleSpecificCards() {
+            const cardsArray = Array.from(wrongGuessCards);
+            
+            // 1. Get current values
+            const currentEmojis = cardsArray.map(c => c.querySelector('.card-back').innerText);
+            
+            // 2. Shuffle values
+            shuffle(currentEmojis);
+
+            // 3. Assign new values (Hidden because cards are face down)
+            cardsArray.forEach((card, index) => {
+                card.querySelector('.card-back').innerText = currentEmojis[index];
+                card.classList.remove('flipped'); 
+            });
         }
 
         function resetBoard() {
@@ -482,56 +470,87 @@
             let timer = duration;
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                let minutes = parseInt(timer / 60, 10);
-                let seconds = parseInt(timer % 60, 10);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                timerDisplay.textContent = minutes + ":" + seconds;
+                let m = parseInt(timer / 60, 10);
+                let s = parseInt(timer % 60, 10);
+                timerDisplay.textContent = (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
                 if (--timer < 0) gameLost();
             }, 1000);
         }
 
-        // ==========================================
-        // 5. GAME OUTCOMES & DB UPDATE
-        // ==========================================
-        
         async function gameWon() {
             clearInterval(timerInterval);
-    
+            isGameActive = false;
             
             try {
-                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-                // 1. Log Winner
+                const ts = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('users').doc(currentUserUid).update({ lastLogin: ts });
                 await db.collection('game_winners').add({
                     name: currentUserData.name,
-                    mobile: currentUserData.mobile,
-                    wonAt: timestamp
-                });
-
-                // 2. UPDATE USER LAST LOGIN (Starts 12h timer)
-                await db.collection('users').doc(currentUserUid).update({
-                    lastLogin: timestamp
+                    wonAt: ts
                 });
                 
-                showMessage("Login Successful", "Security check passed. Access Granted.");
+                document.getElementById('gameOverlay').classList.remove('active');
+                showLeaderboard(); 
             } catch (e) {
                 console.error(e);
-                showMessage("Error", "Could not save data, but you won.");
+                alert("Won, but error saving data.");
             }
         }
 
         function gameLost() {
-           clearInterval(timerInterval);
-            isGameActive = false; // ১. গেম লজিক বন্ধ
-            gameGrid.style.pointerEvents = 'none'; // ২. মাউস ক্লিক পুরোপুরি ডিজেবল (নিরাপত্তার জন্য)
-            showMessage("Game Over", "Time ran out.");
-            auth.signOut();
+            clearInterval(timerInterval);
+            isGameActive = false;
+            gameGrid.style.pointerEvents = 'none';
+            showMessage("Game Over", "Time ran out! Try again?", "RETRY");
         }
 
-        function showMessage(title, body) {
+        async function showLeaderboard() {
+            const overlay = document.getElementById('leaderboardOverlay');
+            const tbody = document.getElementById('leaderboardList');
+            overlay.classList.add('active');
+            
+            try {
+                const snap = await db.collection('game_winners')
+                    .orderBy('wonAt', 'desc')
+                    .limit(10)
+                    .get();
+                
+                tbody.innerHTML = '';
+                if(snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="2">No winners yet!</td></tr>';
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    let dateStr = "Just now";
+                    if(data.wonAt) dateStr = data.wonAt.toDate().toLocaleDateString();
+                    
+                    const row = `<tr><td>${data.name}</td><td>${dateStr}</td></tr>`;
+                    tbody.innerHTML += row;
+                });
+
+            } catch(e) {
+                tbody.innerHTML = '<tr><td colspan="2">Error loading data</td></tr>';
+            }
+        }
+
+        window.handleMsgBtn = function() {
+            const btnText = document.getElementById('msgBtn').innerText;
+            const box = document.getElementById('messageBox');
+            
+            if (btnText === "RETRY") {
+                box.style.display = 'none';
+                startGame();
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        function showMessage(title, body, btnText = "OK") {
             document.getElementById('msgTitle').innerText = title;
             document.getElementById('msgBody').innerText = body;
+            document.getElementById('msgBtn').innerText = btnText;
             document.getElementById('messageBox').style.display = 'block';
         }
     });
