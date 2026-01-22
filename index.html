@@ -485,8 +485,8 @@
                 if (firstCard) firstCard.classList.remove('flipped');
                 if (secondCard) secondCard.classList.remove('flipped');
                 
-                // --- NEW LOGIC: Only Shuffle if 10 Pairs Matched AND 3 Wrong Moves ---
-                if (matchedPairs >= 10 && consecutiveWrong >= 3) {
+                
+                if (matchedPairs >= 22 && consecutiveWrong >= 3) {
                     shuffleTimeout = setTimeout(() => {
                          if(!isGameActive) return;
                         shuffleSpecificCards();
