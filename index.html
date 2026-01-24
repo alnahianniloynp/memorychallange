@@ -3,46 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lamp Login & Memory Challenge</title>
+    <title>Lamp Login & Rewards</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-    /* --- RESET & CORE --- */
+    /* =========================================
+       1. CORE & LAMP STYLES
+       ========================================= */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     
     body { 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        min-height: 100vh;
-        /* FIX: Dynamic viewport height for modern mobile browsers */
-        min-height: 100dvh; 
+        display: flex; justify-content: center; align-items: flex-start; 
+        min-height: 100vh; min-height: 100dvh; 
         background-color: #1a1a1a; 
-        overflow-y: auto; 
-        overflow-x: hidden;
-        user-select: none; 
-        -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden; /* Prevent horizontal scroll */
+        overflow-y: auto;   /* ENABLE VERTICAL SCROLL */
+        user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
     .container { 
-        position: relative; 
-        display: flex; 
-        /* FIX: Strictly centered layout (Middle) */
+        position: relative; width: 100%; 
+        min-height: 100vh; /* Allow it to grow */
+        height: auto;      /* Remove fixed height */
+        display: flex; flex-direction: column; 
         align-items: center; 
-        justify-content: center;
-        gap: 20px; 
-        padding: 20px;
-        z-index: 1; 
-        min-height: 100vh;
-        min-height: 100dvh;
-        width: 100%;
+        padding-top: 50px;
+        padding-bottom: 80px; /* Extra space at bottom for scroll */
     }
 
-    /* --- LAMP STYLES --- */
-    .lamp-wrapper { position: relative; width: 220px; height: 500px; z-index: 10; display: flex; justify-content: center; align-items: flex-end; }
-    .lamp-base { position: absolute; bottom: 0; width: 140px; height: 35px; background: #e0e0e0; border-radius: 50% 50% 10px 10px; z-index: 3; }
+    /* Lamp CSS */
+    .lamp-wrapper { 
+        position: relative; width: 220px; height: 350px;
+        z-index: 10; display: flex; justify-content: center; align-items: flex-end; 
+        margin-bottom: 0px; /* Reduced margin */
+        transform-origin: top center;
+        flex-shrink: 0; /* Prevent lamp from shrinking */
+    }
+    .lamp-base { position: absolute; bottom: 0; width: 140px; height: 35px; background: #e0e0e0; border-radius: 50% 50% 10px 10px; z-index: 3; display: none; }
     .lamp-stand { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 12px; height: 220px; background: linear-gradient(to right, #996515, #ffd700, #996515); z-index: 2; }
     .lamp-head-wrapper { position: absolute; bottom: 230px; left: 50%; transform: translateX(-50%); width: 180px; height: 250px; z-index: 4; }
     .lamp-shade { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, #eaddcf, #fff8dc, #eaddcf); z-index: 5; }
@@ -51,154 +50,187 @@
         position: absolute; bottom: -80px; left: 50%; transform: translateX(-40px); 
         width: 4px; height: 80px; border-left: 3px dotted #b8860b; z-index: 1; cursor: pointer; 
     }
-    /* Invisible larger click area for mobile */
     .lamp-string::before { content: ''; position: absolute; top: 0; left: -20px; width: 40px; height: 100%; z-index: 10; }
     .lamp-string::after { content: ''; position: absolute; bottom: -12px; left: -8px; width: 16px; height: 16px; background: radial-gradient(circle, #ffd700, #b8860b); border-radius: 50%; }
 
-    .lamp-light { position: absolute; top: 240px; left: -20px; width: 220px; height: 300px; background: linear-gradient(to bottom, rgba(255, 223, 150, 0.5) 0%, rgba(255, 223, 150, 0) 80%); clip-path: polygon(20% 0, 80% 0, 100% 100%, 0% 100%); opacity: 0; transition: opacity 0.3s; z-index: 20; pointer-events: none; mix-blend-mode: screen; }
+    .lamp-light { position: absolute; top: 240px; left: -20px; width: 220px; height: 600px; background: linear-gradient(to bottom, rgba(255, 223, 150, 0.6) 0%, rgba(255, 223, 150, 0) 80%); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%); opacity: 0; transition: opacity 0.3s; z-index: 20; pointer-events: none; mix-blend-mode: screen; }
     
     .lamp-wrapper.active .lamp-shade { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); background: #fffacd; }
     .lamp-wrapper.active .lamp-light { opacity: 1; }
     .pull-action { animation: pullString 0.4s ease-in-out; }
     @keyframes pullString { 50% { transform: translateX(-40px) translateY(15px); } }
 
-    /* --- AUTH FORMS --- */
+    /* Auth Forms - FIXED SCROLL ISSUE */
     .auth-container {
-        position: relative; width: 350px; background: rgba(40, 40, 40, 0.95);
+        position: relative; /* Changed from absolute to relative */
+        margin-top: 20px;   /* Adds space below lamp naturally */
+        width: 320px; 
+        background: rgba(40, 40, 40, 0.95);
         border-radius: 10px; box-shadow: 0 15px 25px rgba(0,0,0,0.5); border: 1px solid #333;
-        z-index: 5; opacity: 0; visibility: hidden; transform: translateY(20px);
-        transition: all 0.4s ease; overflow: hidden; 
+        z-index: 50; 
+        opacity: 0; 
+        visibility: hidden; /* Hidden by default */
+        transition: all 0.4s ease;
+        display: none; /* Removed from flow when hidden */
     }
-
-    .auth-container.show { opacity: 1; visibility: visible; transform: translateY(0); }
-    .form-box { padding: 40px; display: none; }
+    .auth-container.show { 
+        opacity: 1; 
+        visibility: visible; 
+        display: block; /* Bring back to flow to allow scroll */
+    }
+    
+    .form-box { padding: 30px; display: none; }
     .form-box.active { display: block; animation: fadeIn 0.5s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    h2 { margin: 0 0 30px; padding: 0; color: #fff; text-align: center; font-size: 24px; }
-    .user-box { position: relative; margin-bottom: 30px; }
+    h2 { margin: 0 0 20px; color: #fff; text-align: center; font-size: 24px; }
+    .user-box { position: relative; margin-bottom: 25px; }
     .user-box input { width: 100%; padding: 10px 0; font-size: 16px; color: #fff; border: none; border-bottom: 1px solid #fff; outline: none; background: transparent; }
     .user-box label { position: absolute; top: 0; left: 0; padding: 10px 0; font-size: 16px; color: #fff; pointer-events: none; transition: .5s; }
     .user-box input:focus ~ label, .user-box input:valid ~ label { top: -20px; left: 0; color: #03e9f4; font-size: 12px; }
     .password-toggle { position: absolute; top: 5px; right: 0; cursor: pointer; filter: invert(1); opacity: 0.7; width: 20px; height: 20px; }
-    .btn { position: relative; display: block; padding: 10px 20px; color: #03e9f4; font-size: 16px; text-transform: uppercase; letter-spacing: 4px; text-align: center; text-decoration: none; border: 1px solid #03e9f4; background: transparent; cursor: pointer; transition: .5s; width: 100%; margin-top: 20px; }
+    .btn { display: block; padding: 10px 20px; color: #03e9f4; font-size: 16px; text-transform: uppercase; letter-spacing: 4px; text-align: center; border: 1px solid #03e9f4; background: transparent; cursor: pointer; transition: .5s; width: 100%; margin-top: 10px; }
     .btn:hover { background: #03e9f4; color: #fff; box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4; }
     .toggle-text { margin-top: 15px; color: #fff; font-size: 12px; text-align: center; cursor: pointer; text-decoration: underline; }
 
-    /* --- GAME OVERLAY & LAYOUT FIX --- */
-    #gameOverlay, #leaderboardOverlay {
+    /* =========================================
+       2. GAME SELECTION MENU
+       ========================================= */
+    #selectionOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.95); z-index: 100;
-        display: flex; flex-direction: column; 
-        /* FIX: Ensure game is always centered */
-        justify-content: center; 
-        align-items: center;
-        opacity: 0; pointer-events: none; transition: opacity 0.5s;
-        touch-action: none;
+        background: rgba(0,0,0,0.95); z-index: 80;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        opacity: 0; pointer-events: none; transition: 0.5s;
     }
-    #gameOverlay.active, #leaderboardOverlay.active { opacity: 1; pointer-events: all; }
+    #selectionOverlay.active { opacity: 1; pointer-events: all; }
     
-    .game-header { color: #fff; margin-bottom: 10px; text-align: center; width: 100%; padding: 0 10px; }
-    .timer { font-size: 2rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; }
+    .game-card-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    .menu-card {
+        width: 160px; height: 220px; border: 2px solid #03e9f4; border-radius: 10px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.3s; background: #222; text-align: center;
+    }
+    .menu-card:hover { transform: scale(1.05); background: #03e9f4; }
+    .menu-card:hover h3, .menu-card:hover span, .menu-card:hover p { color: #000 !important; }
+    .menu-card h3 { color: #03e9f4; margin: 10px 0 5px; font-size: 18px; }
+    .menu-card span { font-size: 40px; }
+    .reward-text { color: #ffd700; font-weight: bold; font-size: 14px; margin-top: 5px; }
+
+    /* Common Overlay */
+    .game-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.98); z-index: 100;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        opacity: 0; pointer-events: none; transition: opacity 0.5s;
+    }
+    .game-overlay.active { opacity: 1; pointer-events: all; }
+
+    /* =========================================
+       3. VISUAL MEMORY (CARDS) STYLES
+       ========================================= */
+    .mem-header { text-align: center; margin-bottom: 10px; color: #fff; }
+    .mem-header h1 { color: #03e9f4; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+    .mem-header p { color: #ffd700; font-size: 14px; font-weight: bold; }
     
     .memory-grid {
-        display: grid; 
-        grid-template-columns: repeat(8, 1fr); 
-        gap: 4px; 
-        width: 95vmin; 
-        height: 95vmin; 
-        max-width: 600px; 
-        max-height: 600px;
+        display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
+        width: 95vmin; height: 95vmin; max-width: 500px; max-height: 500px;
+        margin-bottom: 15px;
     }
-
     .card { background-color: transparent; perspective: 1000px; cursor: pointer; border-radius: 4px; }
-    
-    /* --- ANDROID & iOS FIX FOR GLITCHES --- */
-    .card-inner { 
-        position: relative; 
-        width: 100%; 
-        height: 100%; 
-        text-align: center; 
-        transition: transform 0.6s; 
-        transform-style: preserve-3d; 
-        -webkit-transform-style: preserve-3d; /* Safari/Chrome Mobile Fix */
-    }
-    
-    .card.flipped .card-inner { 
-        transform: rotateY(180deg); 
-        -webkit-transform: rotateY(180deg);
-    }
-    
-    /* FIX: Don't use visibility:hidden. Use Opacity. Solves Black Hole issue */
-    .card.matched .card-inner { 
-        opacity: 0.3; 
-        pointer-events: none;
-    }
-    
+    .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+    .card.matched .card-inner { opacity: 0.3; pointer-events: none; }
     .card-front, .card-back { 
-        position: absolute; 
-        width: 100%; 
-        height: 100%; 
-        backface-visibility: hidden; 
-        -webkit-backface-visibility: hidden; /* Fix for Blue Blink glitch */
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        font-size: 1.5rem; 
-        border-radius: 2px; 
-        box-shadow: 0 0 2px rgba(3, 233, 244, 0.5); 
-        /* Hardware acceleration to prevent glitches */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
+        position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+        display: flex; justify-content: center; align-items: center; font-size: 1.2rem; 
+        border-radius: 2px; box-shadow: 0 0 2px rgba(3, 233, 244, 0.5); 
     }
-    
     .card-front { background-color: #222; border: 1px solid #333; }
-    .card-back { background-color: #03e9f4; color: #000; transform: rotateY(180deg); -webkit-transform: rotateY(180deg); border: 1px solid #03e9f4; }
+    .card-back { background-color: #03e9f4; color: #000; transform: rotateY(180deg); border: 1px solid #03e9f4; }
+    .vis-timer { font-size: 1.5rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; }
 
-    /* LEADERBOARD STYLES */
-    .leaderboard-box {
-        background: #222; border: 1px solid #03e9f4;
-        padding: 20px; border-radius: 10px;
-        width: 90%; max-width: 400px; text-align: center;
-        max-height: 80vh; overflow-y: auto;
+    .mem-controls { display: flex; gap: 15px; }
+    .mini-btn { padding: 8px 15px; background: #333; color: #fff; border: 1px solid #555; cursor: pointer; border-radius: 4px; font-size: 14px; transition: 0.3s; }
+    .mini-btn:hover { background: #fff; color: #000; }
+
+    /* =========================================
+       4. VERBAL MEMORY STYLES (HARDCORE)
+       ========================================= */
+    .verbal-wrapper {
+        --v-primary: #2c3e50;
+        --v-accent: #3498db;
+        --v-success: #27ae60;
+        --v-danger: #e74c3c;
+        --v-warning: #f1c40f;
+        width: 90%; max-width: 450px;
+        position: relative;
     }
-    .leaderboard-box h2 { color: #03e9f4; }
+
+    .v-game-card {
+        background: white; width: 100%;
+        border-radius: 20px; padding: 25px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        text-align: center; position: relative;
+        display: flex; flex-direction: column; justify-content: space-between;
+        min-height: 450px;
+    }
+
+    .v-stats-bar { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; color: #555; margin-bottom: 15px; }
+    .v-heart { color: var(--v-danger); }
+    .v-score-text { color: var(--v-accent); }
+
+    .v-timer-container { width: 100%; height: 8px; background: #ddd; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+    .v-timer-bar { height: 100%; background: var(--v-warning); width: 100%; transition: width linear; }
+
+    .v-word-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+    .v-main-word { font-size: 2.2rem; font-weight: 900; color: var(--v-primary); margin-bottom: 10px; text-transform: uppercase; }
+    .v-meaning-box { font-size: 1.4rem; color: var(--v-success); font-weight: bold; opacity: 0; transition: opacity 0.3s; background: #e8f8f5; padding: 5px 15px; border-radius: 8px; }
+
+    .v-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    .v-btn { border: none; padding: 18px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: transform 0.1s; text-transform: uppercase; }
+    .v-btn:active { transform: scale(0.95); }
+    .v-btn-seen { background-color: var(--v-warning); color: #333; }
+    .v-btn-new { background-color: var(--v-success); color: white; }
+    
+    .v-start-btn { grid-column: span 2; background-color: var(--v-accent); color: white; font-size: 1.5rem; border: none; padding: 18px; border-radius: 12px; cursor:pointer; }
+    
+    /* Internal Overlay for Verbal Game */
+    .v-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255,255,255,0.95); border-radius: 20px; z-index: 10;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+    .v-hidden { display: none !important; }
+    .v-win-msg { color: var(--v-success); font-size: 2rem; font-weight: bold; }
+    .v-lose-msg { color: var(--v-danger); font-size: 2rem; font-weight: bold; }
+
+    /* =========================================
+       5. LEADERBOARD & MISC
+       ========================================= */
+    .leaderboard-box {
+        background: #222; border: 1px solid #03e9f4; padding: 20px; border-radius: 10px;
+        width: 90%; max-width: 400px; text-align: center; max-height: 80vh; overflow-y: auto;
+    }
     .lb-table { width: 100%; margin-top: 10px; color: #fff; border-collapse: collapse; }
     .lb-table th, .lb-table td { padding: 8px; border-bottom: 1px solid #444; text-align: left; }
-    .lb-table th { color: #aaa; font-size: 0.9em; }
-
-    /* Message Box */
+    
     #messageBox {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
         background: #fff; padding: 20px; border-radius: 10px; text-align: center;
         display: none; z-index: 200; box-shadow: 0 0 20px #000; width: 80%; max-width: 300px;
     }
-    #messageBox h3 { color: #333; margin-bottom: 10px; }
     #messageBox button { margin-top: 10px; padding: 8px 16px; cursor: pointer; background: #333; color: #fff; border: none; border-radius: 4px; }
 
     @media (max-width: 600px) {
-        .container { 
-            /* Improved Mobile Layout Centering */
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            padding-top: 0; 
-            padding-bottom: 0;
-        }
-        
-        .lamp-wrapper { 
-            transform: scale(0.65); 
-            height: 350px; 
-            /* Adjust margins to keep tight but centered */
-            margin-bottom: -40px; 
-            margin-top: -40px;
-        }
-        
-        .auth-container { width: 90%; max-width: 350px; }
+        .lamp-wrapper { transform: scale(0.8); margin-bottom: 0px; }
+        .auth-container { width: 90%; }
         .memory-grid { gap: 2px; width: 98vw; height: 98vw; }
         .card-front, .card-back { font-size: 0.9rem; border-width: 1px; }
+        .v-main-word { font-size: 1.8rem; }
+        .v-game-card { padding: 15px; min-height: 400px; }
     }
-</style>
+    </style>
 </head>
 <body>
 
@@ -226,7 +258,7 @@
                         <label>Password</label>
                         <img src="https://api.iconify.design/mdi:eye.svg" class="password-toggle" onclick="togglePassword('li-password')">
                     </div>
-                    <button type="submit" class="btn">Start Challenge</button>
+                    <button type="submit" class="btn">Login</button>
                     <div class="toggle-text" onclick="showSignUp()">New here? Create an account</div>
                 </form>
             </div>
@@ -262,29 +294,87 @@
         </div>
     </div>
 
-    <div id="gameOverlay">
-        <div class="game-header">
-            <h2>Memory Game</h2>
-            <p>Challenge yourself! Match all 32 pairs to show off your sharp memory and grab a reward <b><font color="red">1000 tk</font></b>!</p>
-            <div class="timer" id="timer">5:00</div>
+    <div id="selectionOverlay">
+        <h2 style="color:#03e9f4; margin-bottom:10px;">Choose Your Challenge</h2>
+        <p style="color:#aaa; margin-bottom: 20px; padding:0 20px; text-align:center;">Win to Login!</p>
+        <div class="game-card-container">
+            <div class="menu-card" onclick="startMemoryGame()">
+                <span>🧠</span>
+                <h3>Visual</h3>
+                <small style="color:#fff">Cards</small>
+                <p class="reward-text">Reward: 1000 TK</p>
+            </div>
+            <div class="menu-card" onclick="startVerbalGame()">
+                <span>📖</span>
+                <h3>Verbal</h3>
+                <small style="color:#fff">Words</small>
+                <p class="reward-text">Reward: 500 TK</p>
+            </div>
         </div>
-        <div class="memory-grid" id="gameGrid"></div>
     </div>
 
-    <div id="leaderboardOverlay">
+    <div id="memoryOverlay" class="game-overlay">
+        <div class="mem-header">
+            <h1>Memory Game</h1>
+            <p>Challenge yourself! Match all 32 pairs to show off your sharp memory and grab a reward
+                <font color="red">1000 tk!</font></p>
+        </div>
+        <div class="vis-timer" id="memTimer">5:00</div>
+        <div class="memory-grid" id="gameGrid"></div>
+        <div class="mem-controls">
+            <button class="mini-btn" onclick="startMemoryGame()">RESTART</button>
+            <button class="mini-btn" onclick="exitToMenu()">BACK</button>
+        </div>
+    </div>
+
+    <div id="verbalOverlay" class="game-overlay">
+        <div class="verbal-wrapper">
+            <div class="v-game-card">
+                <div id="vStartScreen" class="v-overlay">
+                    <h1 style="color: #2c3e50;">Memory Master</h1>
+                    <p>Reward: 500 TK</p>
+                    <p>Target: 60 Points</p>
+                    <button class="v-start-btn" onclick="initVerbalGame()">Start Game</button>
+                    <button class="v-btn" style="margin-top:10px; background:#ddd;" onclick="exitToMenu()">Back</button>
+                </div>
+
+                <div id="vEndScreen" class="v-overlay v-hidden">
+                    <div id="vEndTitle" class="v-lose-msg">Game Over</div>
+                    <div style="font-size:1.2rem; color:#555; margin-top:10px;">Score: <span id="vFinalScore">0</span></div>
+                    <br>
+                    <button class="v-start-btn" onclick="initVerbalGame()">Try Again</button>
+                    <button class="v-btn" style="margin-top:10px; background:#ddd;" onclick="exitToMenu()">Back to Menu</button>
+                </div>
+
+                <div class="v-stats-bar">
+                    <span>Lives: <span id="vLives" class="v-heart">❤❤❤</span></span>
+                    <span>Score: <span id="vScore" class="v-score-text">0</span> / 60</span>
+                </div>
+
+                <div class="v-timer-container">
+                    <div id="vTimerBar" class="v-timer-bar"></div>
+                </div>
+
+                <div class="v-word-area">
+                    <div id="vWordDisplay" class="v-main-word">READY</div>
+                    <div id="vMeaningDisplay" class="v-meaning-box">Meaning</div>
+                </div>
+
+                <div class="v-controls">
+                    <button id="btnSeen" class="v-btn v-btn-seen" onclick="checkVerbalAnswer('SEEN')" disabled>SEEN</button>
+                    <button id="btnNew" class="v-btn v-btn-new" onclick="checkVerbalAnswer('NEW')" disabled>NEW</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="leaderboardOverlay" class="game-overlay">
         <div class="leaderboard-box">
             <h2>🏆 Winners Board 🏆</h2>
             <p>Recent Champions</p>
             <table class="lb-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardList">
-                    <tr><td colspan="2">Loading...</td></tr>
-                </tbody>
+                <thead><tr><th>Name</th><th>Game/Prize</th></tr></thead>
+                <tbody id="leaderboardList"><tr><td colspan="2">Loading...</td></tr></tbody>
             </table>
             <button class="btn" style="margin-top:20px; border-color:#fff; color:#fff;" onclick="location.reload()">LOGOUT</button>
         </div>
@@ -297,6 +387,16 @@
     </div>
 
     <script>
+        // ==========================================
+        //  SECURITY PATCH: DISABLE RIGHT CLICK & F12
+        // ==========================================
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) { return false; } // F12
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) { return false; } 
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
         // --- FIREBASE SETUP ---
         const firebaseConfig = {
@@ -308,22 +408,25 @@
             appId: "1:572401506079:web:96d5524cd58e7d31e6422a",
             measurementId: "G-LY1VR65NLV"
         };
-
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // --- UI VARS ---
+        // --- GLOBAL STATE ---
+        let currentUserUid = null;
+        let currentUserData = null;
+        let activeGameMode = ""; 
+        let gameStartTime = 0; // Anti-cheat timer
+
+        // --- LAMP & AUTH ---
         const lamp = document.getElementById('lamp');
         const pullString = document.getElementById('pullString');
         const authContainer = document.getElementById('authContainer');
         let isLampOn = false;
 
-        // --- LAMP LOGIC ---
         pullString.addEventListener('click', () => {
             pullString.classList.add('pull-action');
             setTimeout(() => pullString.classList.remove('pull-action'), 400);
-            
             isLampOn = !isLampOn;
             if (isLampOn) {
                 lamp.classList.add('active');
@@ -338,14 +441,38 @@
         window.showLogin = () => { document.getElementById('signupForm').classList.remove('active'); document.getElementById('loginForm').classList.add('active'); }
         window.togglePassword = (id) => { const x = document.getElementById(id); x.type = x.type === "password" ? "text" : "password"; }
 
-        // --- AUTH ---
+        document.getElementById('form-signin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const cred = await auth.signInWithEmailAndPassword(document.getElementById('li-email').value, document.getElementById('li-password').value);
+                currentUserUid = cred.user.uid;
+                const doc = await db.collection('users').doc(currentUserUid).get();
+                if (!doc.exists) return alert("User missing");
+                
+                currentUserData = doc.data();
+
+                // 12 HOUR CHECK
+                if (currentUserData.lastLogin) {
+                    const diff = (new Date() - currentUserData.lastLogin.toDate()) / (1000 * 60 * 60);
+                    if (diff < 12) {
+                        alert(`ACCESS DENIED. You won ${currentUserData.lastGameWon || 'a game'}. Wait ${(12 - diff).toFixed(1)} more hours.`);
+                        auth.signOut();
+                        return;
+                    }
+                }
+                
+                authContainer.classList.remove('show');
+                lamp.style.display = 'none'; // Hide lamp after login
+                document.getElementById('selectionOverlay').classList.add('active');
+
+            } catch (err) { alert("Login Failed: " + err.message); }
+        });
+        
+        // Register Logic
         document.getElementById('form-signup').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
-                const cred = await auth.createUserWithEmailAndPassword(
-                    document.getElementById('su-email').value,
-                    document.getElementById('su-password').value
-                );
+                const cred = await auth.createUserWithEmailAndPassword(document.getElementById('su-email').value, document.getElementById('su-password').value);
                 await db.collection('users').doc(cred.user.uid).set({
                     name: document.getElementById('su-name').value,
                     mobile: document.getElementById('su-mobile').value,
@@ -358,65 +485,82 @@
             } catch (err) { alert(err.message); }
         });
 
-        let currentUserUid = null;
-        let currentUserData = null;
-
-        document.getElementById('form-signin').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                const cred = await auth.signInWithEmailAndPassword(
-                    document.getElementById('li-email').value,
-                    document.getElementById('li-password').value
-                );
-                currentUserUid = cred.user.uid;
-                const doc = await db.collection('users').doc(currentUserUid).get();
-                if (!doc.exists) return alert("User missing");
-                
-                currentUserData = doc.data();
-
-                if (currentUserData.lastLogin) {
-                    const diff = (new Date() - currentUserData.lastLogin.toDate()) / (1000 * 60 * 60);
-                    if (diff < 12) {
-                        alert(`ACCESS DENIED. Wait ${(12 - diff).toFixed(1)} more hours.`);
-                        auth.signOut();
-                        return;
-                    }
-                }
-                startGame();
-            } catch (err) { alert("Login Failed: " + err.message); }
-        });
-
-        // --- GAME LOGIC ---
-        const gameGrid = document.getElementById('gameGrid');
-        const timerDisplay = document.getElementById('timer');
-        let isGameActive = false, cards = [], hasFlippedCard = false, lockBoard = false;
-        let firstCard, secondCard, matchedPairs = 0, timerInterval;
-        let consecutiveWrong = 0; 
-        let wrongGuessCards = new Set();
-        let unflipTimeout = null, shuffleTimeout = null;
-        const totalPairs = 32;
-
-        const emojis = ['🚀','🌙','⭐','🍎','🚗','🎈','🐱','🐶','🐸','🐼','🐯','🦁','⚽','🏀','🎾','🎱',
-                        '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
-
-        function startGame() {
-            if(unflipTimeout) clearTimeout(unflipTimeout);
-            if(shuffleTimeout) clearTimeout(shuffleTimeout);
-
-            isGameActive = true;
-            document.getElementById('gameOverlay').classList.add('active');
-            document.getElementById('messageBox').style.display = 'none';
-            gameGrid.style.pointerEvents = 'auto';
-            gameGrid.innerHTML = '';
-            matchedPairs = 0;
-            consecutiveWrong = 0;
-            wrongGuessCards.clear();
-            [hasFlippedCard, lockBoard] = [false, false];
-            [firstCard, secondCard] = [null, null];
+        // ==========================================
+        //         SHARED WIN LOGIC & SECURITY
+        // ==========================================
+        async function gameWon() {
+            // --- SECURITY: TIME CHECK ---
+            const endTime = Date.now();
+            const duration = (endTime - gameStartTime) / 1000; // in seconds
             
-            const deck = [...emojis, ...emojis];
-            shuffle(deck);
+            let minTime = 30; // Minimum seconds to physically click all cards
+            if(activeGameMode.includes('Verbal')) minTime = 40; 
+            
+            if (duration < minTime) {
+                alert("CHEATING DETECTED! Game completed impossibly fast.");
+                location.reload(); 
+                return;
+            }
+            // ----------------------------
 
+            try {
+                const ts = firebase.firestore.FieldValue.serverTimestamp();
+                
+                // 1. Update User's last login
+                await db.collection('users').doc(currentUserUid).update({ 
+                    lastLogin: ts,
+                    lastGameWon: activeGameMode 
+                });
+
+                // 2. Add to Public Leaderboard (WITH MOBILE & TIME)
+                await db.collection('game_winners').add({
+                    name: currentUserData.name,
+                    mobile: currentUserData.mobile, 
+                    game: activeGameMode, 
+                    wonAt: ts 
+                });
+                
+                document.getElementById('memoryOverlay').classList.remove('active');
+                document.getElementById('verbalOverlay').classList.remove('active');
+                showLeaderboard(); 
+            } catch (e) { console.error(e); alert("Won, but error saving data."); }
+        }
+
+        window.exitToMenu = function() {
+            document.getElementById('verbalOverlay').classList.remove('active');
+            document.getElementById('memoryOverlay').classList.remove('active');
+            document.getElementById('selectionOverlay').classList.add('active');
+            clearInterval(memTimerInterval);
+            clearInterval(vTimer);
+        }
+
+        // ==========================================
+        //         GAME 1: VISUAL MEMORY (CARDS)
+        // ==========================================
+        let memTimerInterval;
+        
+        window.startMemoryGame = function() {
+            activeGameMode = 'Visual Memory (1000 TK Win)'; 
+            gameStartTime = Date.now(); // START SECURE TIMER
+
+            document.getElementById('selectionOverlay').classList.remove('active');
+            document.getElementById('memoryOverlay').classList.add('active');
+            
+            const gameGrid = document.getElementById('gameGrid');
+            const timerDisplay = document.getElementById('memTimer');
+            let matchedPairs = 0, firstCard, secondCard;
+            let hasFlippedCard = false, lockBoard = false;
+            let wrongGuessCards = new Set();
+            let consecutiveWrong = 0;
+
+            const emojis = ['🚀','🌙','⭐','🍎','🚗','🎈','🐱','🐶','🐸','🐼','🐯','🦁','⚽','🏀','🎾','🎱',
+                            '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
+            const deck = [...emojis, ...emojis];
+            
+            // Shuffle
+            for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+            
+            gameGrid.innerHTML = '';
             deck.forEach(emoji => {
                 const card = document.createElement('div');
                 card.classList.add('card');
@@ -425,180 +569,273 @@
                 gameGrid.appendChild(card);
             });
 
-            startTimer(300); 
-        }
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function flipCard() {
-            if (!isGameActive || lockBoard || this === firstCard || this.classList.contains('matched')) return;
-            this.classList.add('flipped');
-
-            if (!hasFlippedCard) {
-                hasFlippedCard = true; firstCard = this; return;
-            }
-            secondCard = this;
-            checkForMatch();
-        }
-
-        function checkForMatch() {
-            let isMatch = firstCard.querySelector('.card-back').innerText === secondCard.querySelector('.card-back').innerText;
-            
-            if (isMatch) {
-                consecutiveWrong = 0;
-                wrongGuessCards.clear();
-                disableCards();
-            } else {
-                consecutiveWrong++; 
-                wrongGuessCards.add(firstCard);
-                wrongGuessCards.add(secondCard);
-                unflipCards();
-            }
-        }
-
-        function disableCards() {
-            firstCard.removeEventListener('click', flipCard);
-            secondCard.removeEventListener('click', flipCard);
-            
-            setTimeout(() => { 
-                if(!isGameActive) return;
-                firstCard.classList.add('matched'); 
-                secondCard.classList.add('matched'); 
-            }, 500);
-            
-            matchedPairs++;
-            resetBoard();
-            if (matchedPairs === totalPairs) gameWon();
-        }
-
-        function unflipCards() {
-            lockBoard = true;
-            
-            unflipTimeout = setTimeout(() => {
-                if(!isGameActive) return;
-
-                if (firstCard) firstCard.classList.remove('flipped');
-                if (secondCard) secondCard.classList.remove('flipped');
-                
-                
-                if (matchedPairs >= 22 && consecutiveWrong >= 3) {
-                    shuffleTimeout = setTimeout(() => {
-                         if(!isGameActive) return;
-                        shuffleSpecificCards();
-                        consecutiveWrong = 0;
-                        wrongGuessCards.clear();
-                        resetBoard(); 
-                    }, 600); 
-                } else {
-                    resetBoard();
-                }
-
-            }, 1000);
-        }
-
-        function shuffleSpecificCards() {
-            const cardsArray = Array.from(wrongGuessCards);
-            const currentEmojis = cardsArray.map(c => c.querySelector('.card-back').innerText);
-            shuffle(currentEmojis);
-
-            cardsArray.forEach((card, index) => {
-                card.querySelector('.card-back').innerText = currentEmojis[index];
-                card.classList.remove('flipped'); 
-            });
-        }
-
-        function resetBoard() {
-            [hasFlippedCard, lockBoard] = [false, false];
-            [firstCard, secondCard] = [null, null];
-        }
-
-        function startTimer(duration) {
-            let timer = duration;
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
+            let timer = 300; // 5 mins
+            clearInterval(memTimerInterval);
+            memTimerInterval = setInterval(() => {
                 let m = parseInt(timer / 60, 10);
                 let s = parseInt(timer % 60, 10);
                 timerDisplay.textContent = (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
-                if (--timer < 0) gameLost();
+                if (--timer < 0) {
+                    clearInterval(memTimerInterval);
+                    showMessage("Time Up!", "better luck next time", "RETRY");
+                }
+            }, 1000);
+
+            function flipCard() {
+                if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
+                this.classList.add('flipped');
+                if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
+                secondCard = this;
+                checkForMatch();
+            }
+
+            function checkForMatch() {
+                let isMatch = firstCard.querySelector('.card-back').innerText === secondCard.querySelector('.card-back').innerText;
+                if (isMatch) {
+                    consecutiveWrong = 0; wrongGuessCards.clear();
+                    firstCard.removeEventListener('click', flipCard);
+                    secondCard.removeEventListener('click', flipCard);
+                    firstCard.classList.add('matched'); secondCard.classList.add('matched');
+                    matchedPairs++;
+                    resetBoard();
+                    if (matchedPairs === 32) { clearInterval(memTimerInterval); gameWon(); }
+                } else {
+                    consecutiveWrong++;
+                    wrongGuessCards.add(firstCard); wrongGuessCards.add(secondCard);
+                    lockBoard = true;
+                    setTimeout(() => {
+                        firstCard.classList.remove('flipped');
+                        secondCard.classList.remove('flipped');
+                        if (matchedPairs >= 16 && consecutiveWrong >= 3) {
+                             const arr = Array.from(wrongGuessCards);
+                             arr.forEach(c => c.classList.remove('flipped'));
+                             wrongGuessCards.clear(); consecutiveWrong = 0;
+                        }
+                        resetBoard();
+                    }, 1000);
+                }
+            }
+            function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
+        }
+
+        // ==========================================
+        //         GAME 2: VERBAL MEMORY (WORDS)
+        // ==========================================
+        const dictionary = [
+            { en: "Ambiguous", bn: "অস্পষ্ট" }, { en: "Benevolent", bn: "পরোপকারী" },
+            { en: "Candid", bn: "স্পষ্টবাদী" }, { en: "Diligent", bn: "পরিশ্রমী" },
+            { en: "Eloquent", bn: "বাকপটু" }, { en: "Frugal", bn: "মিতব্যয়ী" },
+            { en: "Gregarious", bn: "মিশুক" }, { en: "Hypocrisy", bn: "ভণ্ডামি" },
+            { en: "Ineviatable", bn: "অনিবার্য" }, { en: "Jubilant", bn: "উল্লাসিত" },
+            { en: "Keen", bn: "তীব্র" }, { en: "Lucid", bn: "সহজবোধ্য" },
+            { en: "Meticulous", bn: "খুঁতখুঁতে" }, { en: "Nostalgia", bn: "স্মৃতিকাতরতা" },
+            { en: "Obscure", bn: "দুর্বোধ্য" }, { en: "Pragmatic", bn: "বাস্তববাদী" },
+            { en: "Quaint", bn: "বিচিত্র" }, { en: "Resilient", bn: "স্থিতিস্থাপক" },
+            { en: "Scrutinize", bn: "খুঁটিয়ে দেখা" }, { en: "Tedious", bn: "ক্লান্তিকর" },
+            { en: "Ubiquitous", bn: "সর্বত্র বিরাজমান" }, { en: "Vivid", bn: "প্রাণবন্ত" },
+            { en: "Wary", bn: "সতর্ক" }, { en: "Zenith", bn: "শীর্ষবিন্দু" },
+            { en: "Apathy", bn: "অনীহা" }, { en: "Bolster", bn: "শক্তিশালী করা" },
+            { en: "Capricious", bn: "খামখেয়ালী" }, { en: "Disparate", bn: "অসদৃশ" },
+            { en: "Esoteric", bn: "গূঢ়" }, { en: "Fabricate", bn: "তৈরি করা" },
+            { en: "Gravity", bn: "গাম্ভীর্য" }, { en: "Hinder", bn: "বাধা দেওয়া" },
+            { en: "Instigate", bn: "উস্কানি দেওয়া" }, { en: "Jargon", bn: "পেশাগত ভাষা" },
+            { en: "Knack", bn: "দক্ষতা" }, { en: "Lethargy", bn: "আলস্য" },
+            { en: "Mitigate", bn: "প্রশমিত করা" }, { en: "Naive", bn: "অকপট/সহজ" },
+            { en: "Opulent", bn: "ধনী/সমৃদ্ধ" }, { en: "Paradox", bn: "আপাতবিরোধ" },
+            { en: "Reiterate", bn: "পুনরাবৃত্তি" }, { en: "Skeptical", bn: "সন্দেহপ্রবণ" },
+            { en: "Tactful", bn: "কৌশলী" }, { en: "Unilateral", bn: "একপাক্ষিক" },
+            { en: "Validate", bn: "বৈধ করা" }, { en: "Wander", bn: "ঘুরে বেড়ানো" },
+            { en: "Yield", bn: "উৎপাদন করা" }, { en: "Zeal", bn: "প্রবল উৎসাহ" }
+        ];
+
+        let vSeenIndices = [];
+        let vCurrentWordObj = {};
+        let vScore = 0;
+        let vLives = 3;
+        let vTimer;
+        let vIsProcessing = false;
+
+        window.startVerbalGame = function() {
+            activeGameMode = 'Verbal Memory (500 TK Win)'; 
+            document.getElementById('selectionOverlay').classList.remove('active');
+            document.getElementById('verbalOverlay').classList.add('active');
+            
+            document.getElementById('vStartScreen').classList.remove('v-hidden');
+            document.getElementById('vEndScreen').classList.add('v-hidden');
+        }
+
+        window.initVerbalGame = function() {
+            vScore = 0;
+            vLives = 3;
+            vSeenIndices = [];
+            gameStartTime = Date.now(); // START SECURE TIMER
+
+            document.getElementById('vStartScreen').classList.add('v-hidden');
+            document.getElementById('vEndScreen').classList.add('v-hidden');
+            document.getElementById('vLives').innerHTML = "❤❤❤";
+            document.getElementById('vScore').innerText = vScore;
+            
+            enableVerbalButtons(true);
+            nextVerbalTurn();
+        }
+
+        function nextVerbalTurn() {
+            if (vLives <= 0) { endVerbalGame(false); return; }
+            if (vScore >= 60) { endVerbalGame(true); return; } 
+
+            document.getElementById('vMeaningDisplay').style.opacity = '0';
+            resetVerbalTimer();
+
+            // 40% Chance to show OLD word
+            const showSeen = vSeenIndices.length > 0 && Math.random() < 0.4;
+            let index;
+
+            if (showSeen) {
+                const randomIdx = Math.floor(Math.random() * vSeenIndices.length);
+                index = vSeenIndices[randomIdx];
+            } else {
+                do {
+                    index = Math.floor(Math.random() * dictionary.length);
+                } while (vSeenIndices.includes(index) && vSeenIndices.length < dictionary.length);
+            }
+
+            vCurrentWordObj = dictionary[index];
+            vCurrentWordObj.index = index; 
+            
+            document.getElementById('vWordDisplay').innerText = vCurrentWordObj.en;
+            startVerbalTimer();
+            vIsProcessing = false;
+        }
+
+        window.checkVerbalAnswer = function(userChoice) {
+            if (vIsProcessing) return;
+            vIsProcessing = true;
+            clearInterval(vTimer);
+
+            const isSeenActually = vSeenIndices.includes(vCurrentWordObj.index);
+            const isCorrect = (userChoice === 'SEEN' && isSeenActually) || (userChoice === 'NEW' && !isSeenActually);
+
+            const meaningBox = document.getElementById('vMeaningDisplay');
+            meaningBox.innerText = vCurrentWordObj.bn;
+            meaningBox.style.opacity = '1';
+
+            if (isCorrect) {
+                vScore++;
+                if (!isSeenActually) vSeenIndices.push(vCurrentWordObj.index);
+                
+                document.getElementById('vScore').innerText = vScore;
+                document.querySelector('.v-game-card').style.border = "3px solid #27ae60";
+            } else {
+                vLives--;
+                updateVLivesUI();
+                if (!isSeenActually) vSeenIndices.push(vCurrentWordObj.index); 
+                document.querySelector('.v-game-card').style.border = "3px solid #e74c3c";
+            }
+
+            setTimeout(() => {
+                document.querySelector('.v-game-card').style.border = "none";
+                nextVerbalTurn();
+            }, 1000); 
+        }
+
+        function updateVLivesUI() {
+            let hearts = "";
+            for(let i=0; i<vLives; i++) hearts += "❤";
+            document.getElementById('vLives').innerText = hearts;
+        }
+
+        function startVerbalTimer() {
+            const baseTime = 2500;
+            const dropRate = 40; 
+            const minTime = 700;
+            
+            const totalTime = Math.max(minTime, baseTime - (vScore * dropRate)); 
+            
+            const timerBar = document.getElementById('vTimerBar');
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            void timerBar.offsetWidth; 
+            timerBar.style.transition = `width ${totalTime}ms linear`;
+            timerBar.style.width = '0%';
+
+            vTimer = setTimeout(() => {
+                if(!vIsProcessing) handleVerbalTimeout();
+            }, totalTime);
+        }
+
+        function resetVerbalTimer() {
+            clearTimeout(vTimer);
+            document.getElementById('vTimerBar').style.width = '100%';
+        }
+
+        function handleVerbalTimeout() {
+            vIsProcessing = true;
+            vLives--;
+            updateVLivesUI();
+            
+            document.getElementById('vMeaningDisplay').innerText = vCurrentWordObj.bn;
+            document.getElementById('vMeaningDisplay').style.opacity = '1';
+            document.querySelector('.v-game-card').style.border = "3px solid #e74c3c";
+
+            if (!vSeenIndices.includes(vCurrentWordObj.index)) {
+                vSeenIndices.push(vCurrentWordObj.index);
+            }
+
+            setTimeout(() => {
+                document.querySelector('.v-game-card').style.border = "none";
+                nextVerbalTurn();
             }, 1000);
         }
 
-        async function gameWon() {
-            clearInterval(timerInterval);
-            isGameActive = false;
-            
-            try {
-                const ts = firebase.firestore.FieldValue.serverTimestamp();
-                await db.collection('users').doc(currentUserUid).update({ lastLogin: ts });
-                await db.collection('game_winners').add({
-                    name: currentUserData.name,
-                    wonAt: ts
-                });
-                
-                document.getElementById('gameOverlay').classList.remove('active');
-                showLeaderboard(); 
-            } catch (e) {
-                console.error(e);
-                alert("Won, but error saving data.");
+        function endVerbalGame(win) {
+            if (win) {
+                gameWon();
+            } else {
+                const endScreen = document.getElementById('vEndScreen');
+                const title = document.getElementById('vEndTitle');
+                endScreen.classList.remove('v-hidden');
+                document.getElementById('vFinalScore').innerText = vScore;
+                enableVerbalButtons(false);
+                title.innerText = "Game Over";
+                title.style.color = "var(--v-danger)";
             }
         }
 
-        function gameLost() {
-            clearInterval(timerInterval);
-            if(unflipTimeout) clearTimeout(unflipTimeout);
-            if(shuffleTimeout) clearTimeout(shuffleTimeout);
-            
-            isGameActive = false;
-            gameGrid.style.pointerEvents = 'none';
-            showMessage("Game Over", "Time ran out! Try again?", "RETRY");
+        function enableVerbalButtons(enable) {
+            document.getElementById('btnSeen').disabled = !enable;
+            document.getElementById('btnNew').disabled = !enable;
         }
 
+        // ==========================================
+        //         COMMON UI HELPERS
+        // ==========================================
         async function showLeaderboard() {
             const overlay = document.getElementById('leaderboardOverlay');
             const tbody = document.getElementById('leaderboardList');
             overlay.classList.add('active');
             
             try {
-                const snap = await db.collection('game_winners')
-                    .orderBy('wonAt', 'desc')
-                    .limit(10)
-                    .get();
-                
+                const snap = await db.collection('game_winners').orderBy('wonAt', 'desc').limit(10).get();
                 tbody.innerHTML = '';
-                if(snap.empty) {
-                    tbody.innerHTML = '<tr><td colspan="2">No winners yet!</td></tr>';
-                    return;
-                }
+                if(snap.empty) { tbody.innerHTML = '<tr><td colspan="2">No winners yet!</td></tr>'; return; }
 
                 snap.forEach(doc => {
                     const data = doc.data();
-                    let dateStr = "Just now";
-                    if(data.wonAt) dateStr = data.wonAt.toDate().toLocaleDateString();
-                    
-                    const row = `<tr><td>${data.name}</td><td>${dateStr}</td></tr>`;
-                    tbody.innerHTML += row;
-                });
+                    let gameName = data.game || "Unknown Game";
+                    let icon = '🧠'; 
+                    if (gameName.includes('Verbal')) icon = '📖';
 
-            } catch(e) {
-                tbody.innerHTML = '<tr><td colspan="2">Error loading data</td></tr>';
-            }
+                    tbody.innerHTML += `<tr><td>${data.name}</td><td>${icon} ${gameName}</td></tr>`;
+                });
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="2">Error loading data</td></tr>'; }
         }
 
         window.handleMsgBtn = function() {
             const btnText = document.getElementById('msgBtn').innerText;
-            const box = document.getElementById('messageBox');
-            
+            document.getElementById('messageBox').style.display = 'none';
             if (btnText === "RETRY") {
-                box.style.display = 'none';
-                startGame();
-            } else {
-                box.style.display = 'none';
-            }
+                exitToMenu();
+            } 
         }
 
         function showMessage(title, body, btnText = "OK") {
@@ -607,6 +844,7 @@
             document.getElementById('msgBtn').innerText = btnText;
             document.getElementById('messageBox').style.display = 'block';
         }
+
     });
     </script>
 </body>
