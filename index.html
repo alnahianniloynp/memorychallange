@@ -618,7 +618,7 @@
                     setTimeout(() => {
                         firstCard.classList.remove('flipped');
                         secondCard.classList.remove('flipped');
-                        if (matchedPairs >= 16 && consecutiveWrong >= 3) {
+                        if (matchedPairs >= 10 && consecutiveWrong >= 3) {
                              const arr = Array.from(wrongGuessCards);
                              arr.forEach(c => c.classList.remove('flipped'));
                              wrongGuessCards.clear(); consecutiveWrong = 0;
