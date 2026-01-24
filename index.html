@@ -18,28 +18,28 @@
         display: flex; justify-content: center; align-items: flex-start; 
         min-height: 100vh; min-height: 100dvh; 
         background-color: #1a1a1a; 
-        overflow-x: hidden; /* Prevent horizontal scroll */
-        overflow-y: auto;   /* ENABLE VERTICAL SCROLL */
+        overflow-x: hidden; 
+        overflow-y: auto;   /* Mobile Scroll Enabled */
         user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
     .container { 
         position: relative; width: 100%; 
-        min-height: 100vh; /* Allow it to grow */
-        height: auto;      /* Remove fixed height */
+        min-height: 100vh; 
+        height: auto;      
         display: flex; flex-direction: column; 
         align-items: center; 
         padding-top: 50px;
-        padding-bottom: 80px; /* Extra space at bottom for scroll */
+        padding-bottom: 80px; 
     }
 
     /* Lamp CSS */
     .lamp-wrapper { 
         position: relative; width: 220px; height: 350px;
         z-index: 10; display: flex; justify-content: center; align-items: flex-end; 
-        margin-bottom: 0px; /* Reduced margin */
+        margin-bottom: 0px; 
         transform-origin: top center;
-        flex-shrink: 0; /* Prevent lamp from shrinking */
+        flex-shrink: 0; 
     }
     .lamp-base { position: absolute; bottom: 0; width: 140px; height: 35px; background: #e0e0e0; border-radius: 50% 50% 10px 10px; z-index: 3; display: none; }
     .lamp-stand { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 12px; height: 220px; background: linear-gradient(to right, #996515, #ffd700, #996515); z-index: 2; }
@@ -60,23 +60,23 @@
     .pull-action { animation: pullString 0.4s ease-in-out; }
     @keyframes pullString { 50% { transform: translateX(-40px) translateY(15px); } }
 
-    /* Auth Forms - FIXED SCROLL ISSUE */
+    /* Auth Forms */
     .auth-container {
-        position: relative; /* Changed from absolute to relative */
-        margin-top: 20px;   /* Adds space below lamp naturally */
+        position: relative; /* Fixed for Mobile Scroll */
+        margin-top: 20px;   
         width: 320px; 
         background: rgba(40, 40, 40, 0.95);
         border-radius: 10px; box-shadow: 0 15px 25px rgba(0,0,0,0.5); border: 1px solid #333;
         z-index: 50; 
         opacity: 0; 
-        visibility: hidden; /* Hidden by default */
+        visibility: hidden; 
         transition: all 0.4s ease;
-        display: none; /* Removed from flow when hidden */
+        display: none; 
     }
     .auth-container.show { 
         opacity: 1; 
         visibility: visible; 
-        display: block; /* Bring back to flow to allow scroll */
+        display: block; 
     }
     
     .form-box { padding: 30px; display: none; }
@@ -317,7 +317,8 @@
         <div class="mem-header">
             <h1>Memory Game</h1>
             <p>Challenge yourself! Match all 32 pairs to show off your sharp memory and grab a reward
-                <font color="red">1000 tk!</font></p>
+                <font color="red">1000 tk !</font>
+            </p>
         </div>
         <div class="vis-timer" id="memTimer">5:00</div>
         <div class="memory-grid" id="gameGrid"></div>
@@ -468,17 +469,28 @@
             } catch (err) { alert("Login Failed: " + err.message); }
         });
         
-        // Register Logic
+        // ==========================================
+        //  UPDATED SIGN-UP LOGIC
+        // ==========================================
         document.getElementById('form-signup').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
-                const cred = await auth.createUserWithEmailAndPassword(document.getElementById('su-email').value, document.getElementById('su-password').value);
+                // 1. Create Auth User
+                const cred = await auth.createUserWithEmailAndPassword(
+                    document.getElementById('su-email').value, 
+                    document.getElementById('su-password').value
+                );
+                
+                // 2. Save Specific Data to Firestore
                 await db.collection('users').doc(cred.user.uid).set({
                     name: document.getElementById('su-name').value,
+                    email: document.getElementById('su-email').value,   // Added
                     mobile: document.getElementById('su-mobile').value,
+                    dob: document.getElementById('su-dob').value,       // Added
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastLogin: null
                 });
+
                 alert("Registered! Please Login.");
                 showLogin();
                 e.target.reset();
@@ -577,7 +589,7 @@
                 timerDisplay.textContent = (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
                 if (--timer < 0) {
                     clearInterval(memTimerInterval);
-                    showMessage("Time Up!", "better luck next time", "RETRY");
+                    showMessage("Time Up!", "better luck next time.", "RETRY");
                 }
             }, 1000);
 
