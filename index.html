@@ -302,13 +302,13 @@
                 <span>🧠</span>
                 <h3>Visual</h3>
                 <small style="color:#fff">Cards</small>
-                <p class="reward-text">Reward: 1000 TK</p>
+                <p class="reward-text">Reward: 500 TK</p>
             </div>
             <div class="menu-card" onclick="startVerbalGame()">
                 <span>📖</span>
                 <h3>Verbal</h3>
                 <small style="color:#fff">Words</small>
-                <p class="reward-text">Reward: 500 TK</p>
+                <p class="reward-text">Reward: 1000 TK</p>
             </div>
         </div>
     </div>
@@ -317,7 +317,7 @@
         <div class="mem-header">
             <h1>Memory Game</h1>
             <p>Challenge yourself! Match all 32 pairs to show off your sharp memory and grab a reward
-                <font color="red">1000 tk !</font>
+                <font color="red">500 tk !</font>
             </p>
         </div>
         <div class="vis-timer" id="memTimer">5:00</div>
@@ -333,7 +333,7 @@
             <div class="v-game-card">
                 <div id="vStartScreen" class="v-overlay">
                     <h1 style="color: #2c3e50;">Memory Master</h1>
-                    <p>Reward: 500 TK</p>
+                    <p>Reward: 1000 TK</p>
                     <p>Target: 60 Points</p>
                     <button class="v-start-btn" onclick="initVerbalGame()">Start Game</button>
                     <button class="v-btn" style="margin-top:10px; background:#ddd;" onclick="exitToMenu()">Back</button>
@@ -591,7 +591,7 @@
                     clearInterval(memTimerInterval);
                     showMessage("Time Up!", "better luck next time.", "RETRY");
                 }
-            }, 1000);
+            }, 800);
 
             function flipCard() {
                 if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
