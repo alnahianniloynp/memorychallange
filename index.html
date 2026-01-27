@@ -10,7 +10,7 @@
 
     <style>
     /* =========================================
-       1. CORE & LAMP STYLES
+       STYLES (CORE)
        ========================================= */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     
@@ -18,71 +18,38 @@
         display: flex; justify-content: center; align-items: flex-start; 
         min-height: 100vh; min-height: 100dvh; 
         background-color: #1a1a1a; 
-        overflow-x: hidden; 
-        overflow-y: auto;   /* Mobile Scroll Enabled */
+        overflow-x: hidden; overflow-y: auto;
         user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
     .container { 
         position: relative; width: 100%; 
-        min-height: 100vh; 
-        height: auto;      
-        display: flex; flex-direction: column; 
-        align-items: center; 
-        padding-top: 50px;
-        padding-bottom: 80px; 
+        min-height: 100vh; height: auto;      
+        display: flex; flex-direction: column; align-items: center; 
+        padding-top: 50px; padding-bottom: 80px; 
     }
 
-    /* Lamp CSS */
-    .lamp-wrapper { 
-        position: relative; width: 220px; height: 350px;
-        z-index: 10; display: flex; justify-content: center; align-items: flex-end; 
-        margin-bottom: 0px; 
-        transform-origin: top center;
-        flex-shrink: 0; 
-    }
+    /* LAMP STYLES */
+    .lamp-wrapper { position: relative; width: 220px; height: 350px; z-index: 10; display: flex; justify-content: center; align-items: flex-end; transform-origin: top center; flex-shrink: 0; }
     .lamp-base { position: absolute; bottom: 0; width: 140px; height: 35px; background: #e0e0e0; border-radius: 50% 50% 10px 10px; z-index: 3; display: none; }
     .lamp-stand { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 12px; height: 220px; background: linear-gradient(to right, #996515, #ffd700, #996515); z-index: 2; }
     .lamp-head-wrapper { position: absolute; bottom: 230px; left: 50%; transform: translateX(-50%); width: 180px; height: 250px; z-index: 4; }
     .lamp-shade { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, #eaddcf, #fff8dc, #eaddcf); z-index: 5; }
-    
-    .lamp-string { 
-        position: absolute; bottom: -80px; left: 50%; transform: translateX(-40px); 
-        width: 4px; height: 80px; border-left: 3px dotted #b8860b; z-index: 1; cursor: pointer; 
-    }
+    .lamp-string { position: absolute; bottom: -80px; left: 50%; transform: translateX(-40px); width: 4px; height: 80px; border-left: 3px dotted #b8860b; z-index: 1; cursor: pointer; }
     .lamp-string::before { content: ''; position: absolute; top: 0; left: -20px; width: 40px; height: 100%; z-index: 10; }
     .lamp-string::after { content: ''; position: absolute; bottom: -12px; left: -8px; width: 16px; height: 16px; background: radial-gradient(circle, #ffd700, #b8860b); border-radius: 50%; }
-
     .lamp-light { position: absolute; top: 240px; left: -20px; width: 220px; height: 600px; background: linear-gradient(to bottom, rgba(255, 223, 150, 0.6) 0%, rgba(255, 223, 150, 0) 80%); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%); opacity: 0; transition: opacity 0.3s; z-index: 20; pointer-events: none; mix-blend-mode: screen; }
-    
     .lamp-wrapper.active .lamp-shade { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); background: #fffacd; }
     .lamp-wrapper.active .lamp-light { opacity: 1; }
     .pull-action { animation: pullString 0.4s ease-in-out; }
     @keyframes pullString { 50% { transform: translateX(-40px) translateY(15px); } }
 
-    /* Auth Forms */
-    .auth-container {
-        position: relative; /* Fixed for Mobile Scroll */
-        margin-top: 20px;   
-        width: 320px; 
-        background: rgba(40, 40, 40, 0.95);
-        border-radius: 10px; box-shadow: 0 15px 25px rgba(0,0,0,0.5); border: 1px solid #333;
-        z-index: 50; 
-        opacity: 0; 
-        visibility: hidden; 
-        transition: all 0.4s ease;
-        display: none; 
-    }
-    .auth-container.show { 
-        opacity: 1; 
-        visibility: visible; 
-        display: block; 
-    }
-    
+    /* AUTH FORMS */
+    .auth-container { position: relative; margin-top: 20px; width: 320px; background: rgba(40, 40, 40, 0.95); border-radius: 10px; box-shadow: 0 15px 25px rgba(0,0,0,0.5); border: 1px solid #333; z-index: 50; opacity: 0; visibility: hidden; transition: all 0.4s ease; display: none; }
+    .auth-container.show { opacity: 1; visibility: visible; display: block; }
     .form-box { padding: 30px; display: none; }
     .form-box.active { display: block; animation: fadeIn 0.5s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     h2 { margin: 0 0 20px; color: #fff; text-align: center; font-size: 24px; }
     .user-box { position: relative; margin-bottom: 25px; }
     .user-box input { width: 100%; padding: 10px 0; font-size: 16px; color: #fff; border: none; border-bottom: 1px solid #fff; outline: none; background: transparent; }
@@ -93,133 +60,76 @@
     .btn:hover { background: #03e9f4; color: #fff; box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4; }
     .toggle-text { margin-top: 15px; color: #fff; font-size: 12px; text-align: center; cursor: pointer; text-decoration: underline; }
 
-    /* =========================================
-       2. GAME SELECTION MENU
-       ========================================= */
-    #selectionOverlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.95); z-index: 80;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        opacity: 0; pointer-events: none; transition: 0.5s;
-    }
+    /* MENU */
+    #selectionOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 80; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.5s; }
     #selectionOverlay.active { opacity: 1; pointer-events: all; }
-    
     .game-card-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-    .menu-card {
-        width: 160px; height: 220px; border: 2px solid #03e9f4; border-radius: 10px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        cursor: pointer; transition: 0.3s; background: #222; text-align: center;
-    }
+    .menu-card { width: 160px; height: 220px; border: 2px solid #03e9f4; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; background: #222; text-align: center; }
     .menu-card:hover { transform: scale(1.05); background: #03e9f4; }
     .menu-card:hover h3, .menu-card:hover span, .menu-card:hover p { color: #000 !important; }
     .menu-card h3 { color: #03e9f4; margin: 10px 0 5px; font-size: 18px; }
     .menu-card span { font-size: 40px; }
     .reward-text { color: #ffd700; font-weight: bold; font-size: 14px; margin-top: 5px; }
 
-    /* Common Overlay */
-    .game-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.98); z-index: 100;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        opacity: 0; pointer-events: none; transition: opacity 0.5s;
-    }
+    /* GAME OVERLAYS */
+    .game-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
     .game-overlay.active { opacity: 1; pointer-events: all; }
 
-    /* =========================================
-       3. VISUAL MEMORY (CARDS) STYLES
-       ========================================= */
+    /* VISUAL GAME */
     .mem-header { text-align: center; margin-bottom: 10px; color: #fff; }
     .mem-header h1 { color: #03e9f4; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
     .mem-header p { color: #ffd700; font-size: 14px; font-weight: bold; }
-    
-    .memory-grid {
-        display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
-        width: 95vmin; height: 95vmin; max-width: 500px; max-height: 500px;
-        margin-bottom: 15px;
-    }
+    .memory-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; width: 95vmin; height: 95vmin; max-width: 500px; max-height: 500px; margin-bottom: 15px; }
     .card { background-color: transparent; perspective: 1000px; cursor: pointer; border-radius: 4px; }
     .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
     .card.flipped .card-inner { transform: rotateY(180deg); }
     .card.matched .card-inner { opacity: 0.3; pointer-events: none; }
-    .card-front, .card-back { 
-        position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-        display: flex; justify-content: center; align-items: center; font-size: 1.2rem; 
-        border-radius: 2px; box-shadow: 0 0 2px rgba(3, 233, 244, 0.5); 
-    }
+    .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; border-radius: 2px; box-shadow: 0 0 2px rgba(3, 233, 244, 0.5); }
     .card-front { background-color: #222; border: 1px solid #333; }
     .card-back { background-color: #03e9f4; color: #000; transform: rotateY(180deg); border: 1px solid #03e9f4; }
     .vis-timer { font-size: 1.5rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; }
-
     .mem-controls { display: flex; gap: 15px; }
     .mini-btn { padding: 8px 15px; background: #333; color: #fff; border: 1px solid #555; cursor: pointer; border-radius: 4px; font-size: 14px; transition: 0.3s; }
     .mini-btn:hover { background: #fff; color: #000; }
 
-    /* =========================================
-       4. VERBAL MEMORY STYLES (HARDCORE)
-       ========================================= */
-    .verbal-wrapper {
-        --v-primary: #2c3e50;
-        --v-accent: #3498db;
-        --v-success: #27ae60;
-        --v-danger: #e74c3c;
-        --v-warning: #f1c40f;
-        width: 90%; max-width: 450px;
-        position: relative;
-    }
-
-    .v-game-card {
-        background: white; width: 100%;
-        border-radius: 20px; padding: 25px;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        text-align: center; position: relative;
-        display: flex; flex-direction: column; justify-content: space-between;
-        min-height: 450px;
-    }
-
+    /* VERBAL GAME */
+    .verbal-wrapper { --v-primary: #2c3e50; --v-accent: #3498db; --v-success: #27ae60; --v-danger: #e74c3c; --v-warning: #f1c40f; width: 90%; max-width: 450px; position: relative; }
+    .v-game-card { background: white; width: 100%; border-radius: 20px; padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); text-align: center; position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 450px; }
     .v-stats-bar { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; color: #555; margin-bottom: 15px; }
     .v-heart { color: var(--v-danger); }
     .v-score-text { color: var(--v-accent); }
-
     .v-timer-container { width: 100%; height: 8px; background: #ddd; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
     .v-timer-bar { height: 100%; background: var(--v-warning); width: 100%; transition: width linear; }
-
     .v-word-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
     .v-main-word { font-size: 2.2rem; font-weight: 900; color: var(--v-primary); margin-bottom: 10px; text-transform: uppercase; }
     .v-meaning-box { font-size: 1.4rem; color: var(--v-success); font-weight: bold; opacity: 0; transition: opacity 0.3s; background: #e8f8f5; padding: 5px 15px; border-radius: 8px; }
-
     .v-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .v-btn { border: none; padding: 18px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: transform 0.1s; text-transform: uppercase; }
     .v-btn:active { transform: scale(0.95); }
     .v-btn-seen { background-color: var(--v-warning); color: #333; }
     .v-btn-new { background-color: var(--v-success); color: white; }
-    
     .v-start-btn { grid-column: span 2; background-color: var(--v-accent); color: white; font-size: 1.5rem; border: none; padding: 18px; border-radius: 12px; cursor:pointer; }
-    
-    /* Internal Overlay for Verbal Game */
-    .v-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255,255,255,0.95); border-radius: 20px; z-index: 10;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-    }
+    .v-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); border-radius: 20px; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .v-hidden { display: none !important; }
     .v-win-msg { color: var(--v-success); font-size: 2rem; font-weight: bold; }
     .v-lose-msg { color: var(--v-danger); font-size: 2rem; font-weight: bold; }
 
-    /* =========================================
-       5. LEADERBOARD & MISC
-       ========================================= */
-    .leaderboard-box {
-        background: #222; border: 1px solid #03e9f4; padding: 20px; border-radius: 10px;
-        width: 90%; max-width: 400px; text-align: center; max-height: 80vh; overflow-y: auto;
-    }
+    /* AD CONFIRMATION & PAUSE OVERLAY */
+    #adConfirmOverlay, #adPauseOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; }
+    .ad-card { background: #222; border: 2px solid #ffd700; padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
+    .ad-card h2 { color: #ffd700; margin-bottom: 10px; }
+    .ad-card p { color: #fff; margin-bottom: 20px; font-size: 14px; }
+    .ad-btn { background: #03e9f4; color: #000; border: none; padding: 12px 25px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; width: 100%; margin-top: 10px; animation: pulse 1.5s infinite; }
+    .pause-btn { background: #00ff00; color: #000; border: none; padding: 15px 30px; font-size: 20px; font-weight: bold; cursor: pointer; border-radius: 50px; text-transform: uppercase; width: 100%; margin-top: 20px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(3, 233, 244, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(3, 233, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(3, 233, 244, 0); } }
+    .loader-bar-container { width: 100%; height: 10px; background: #444; border-radius: 5px; margin-top: 15px; overflow: hidden; display: none; }
+    .loader-bar { width: 0%; height: 100%; background: #00ff00; transition: width 0.1s linear; }
+
+    /* LEADERBOARD & MISC */
+    .leaderboard-box { background: #222; border: 1px solid #03e9f4; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; max-height: 80vh; overflow-y: auto; }
     .lb-table { width: 100%; margin-top: 10px; color: #fff; border-collapse: collapse; }
     .lb-table th, .lb-table td { padding: 8px; border-bottom: 1px solid #444; text-align: left; }
-    
-    #messageBox {
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: #fff; padding: 20px; border-radius: 10px; text-align: center;
-        display: none; z-index: 200; box-shadow: 0 0 20px #000; width: 80%; max-width: 300px;
-    }
+    #messageBox { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 10px; text-align: center; display: none; z-index: 200; box-shadow: 0 0 20px #000; width: 80%; max-width: 300px; }
     #messageBox button { margin-top: 10px; padding: 8px 16px; cursor: pointer; background: #333; color: #fff; border: none; border-radius: 4px; }
 
     @media (max-width: 600px) {
@@ -369,6 +279,27 @@
         </div>
     </div>
 
+    <div id="adConfirmOverlay">
+        <div class="ad-card">
+            <h2>🏆 YOU WON! 🏆</h2>
+            <p>To claim your <span style="color:#03e9f4; font-weight:bold;">REWARD TK</span>, you must view the sponsor ad.</p>
+            <button class="ad-btn" onclick="claimReward()">💰 CLAIM REWARD 💰</button>
+            <div class="loader-bar-container" id="adLoaderBox">
+                <div class="loader-bar" id="adLoader"></div>
+                <small style="color:#aaa; display:block; margin-top:5px;">Verifying Ad View...</small>
+            </div>
+        </div>
+    </div>
+
+    <div id="adPauseOverlay">
+        <div class="ad-card" style="border-color:#00ff00;">
+            <h2 style="color:#fff;">Sponsor Ad Opened</h2>
+            <p>Please check the ad tab, then come back here to start the game.</p>
+            <p style="color:#aaa; font-size:12px;">(Timer will start only when you click below)</p>
+            <button id="resumeGameBtn" class="pause-btn">▶ START NOW</button>
+        </div>
+    </div>
+
     <div id="leaderboardOverlay" class="game-overlay">
         <div class="leaderboard-box">
             <h2>🏆 Winners Board 🏆</h2>
@@ -393,7 +324,7 @@
         // ==========================================
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) {
-            if (e.keyCode == 123) { return false; } // F12
+            if (e.keyCode == 123) { return false; } 
             if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) { return false; } 
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
         }
@@ -417,7 +348,32 @@
         let currentUserUid = null;
         let currentUserData = null;
         let activeGameMode = ""; 
-        let gameStartTime = 0; // Anti-cheat timer
+        let gameStartTime = 0; 
+        
+        // #############################################
+        // !!! IMPORTANT: PUT YOUR AD LINK HERE !!!
+        // #############################################
+        const DIRECT_AD_LINK = "https://www.effectivegatecpm.com/wds2hb4yd?key=f115833d077fcd41574f076f14a2ceea"; // <--- CHANGE THIS to your Adsterra Link
+        // #############################################
+
+        // ==========================================
+        //  SMART AD SYSTEM (FIXES TIMER ISSUE)
+        // ==========================================
+        function waitForAd(callback) {
+            // 1. Open Ad
+            window.open(DIRECT_AD_LINK, '_blank');
+            
+            // 2. Show "Paused/Start" Overlay
+            const overlay = document.getElementById('adPauseOverlay');
+            const btn = document.getElementById('resumeGameBtn');
+            overlay.style.display = 'flex';
+            
+            // 3. Wait for User to Click "Start"
+            btn.onclick = function() {
+                overlay.style.display = 'none';
+                callback(); // Run the actual game start logic ONLY now
+            }
+        }
 
         // --- LAMP & AUTH ---
         const lamp = document.getElementById('lamp');
@@ -452,7 +408,6 @@
                 
                 currentUserData = doc.data();
 
-                // 12 HOUR CHECK
                 if (currentUserData.lastLogin) {
                     const diff = (new Date() - currentUserData.lastLogin.toDate()) / (1000 * 60 * 60);
                     if (diff < 12) {
@@ -463,30 +418,25 @@
                 }
                 
                 authContainer.classList.remove('show');
-                lamp.style.display = 'none'; // Hide lamp after login
+                lamp.style.display = 'none'; 
                 document.getElementById('selectionOverlay').classList.add('active');
 
             } catch (err) { alert("Login Failed: " + err.message); }
         });
         
-        // ==========================================
-        //  UPDATED SIGN-UP LOGIC
-        // ==========================================
         document.getElementById('form-signup').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
-                // 1. Create Auth User
                 const cred = await auth.createUserWithEmailAndPassword(
                     document.getElementById('su-email').value, 
                     document.getElementById('su-password').value
                 );
                 
-                // 2. Save Specific Data to Firestore
                 await db.collection('users').doc(cred.user.uid).set({
                     name: document.getElementById('su-name').value,
-                    email: document.getElementById('su-email').value,   // Added
+                    email: document.getElementById('su-email').value,
                     mobile: document.getElementById('su-mobile').value,
-                    dob: document.getElementById('su-dob').value,       // Added
+                    dob: document.getElementById('su-dob').value,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastLogin: null
                 });
@@ -498,14 +448,13 @@
         });
 
         // ==========================================
-        //         SHARED WIN LOGIC & SECURITY
+        //         WIN LOGIC
         // ==========================================
         async function gameWon() {
-            // --- SECURITY: TIME CHECK ---
             const endTime = Date.now();
-            const duration = (endTime - gameStartTime) / 1000; // in seconds
+            const duration = (endTime - gameStartTime) / 1000;
             
-            let minTime = 30; // Minimum seconds to physically click all cards
+            let minTime = 30; 
             if(activeGameMode.includes('Verbal')) minTime = 40; 
             
             if (duration < minTime) {
@@ -513,18 +462,45 @@
                 location.reload(); 
                 return;
             }
-            // ----------------------------
 
+            // HIDE GAME, SHOW AD OVERLAY
+            document.getElementById('memoryOverlay').classList.remove('active');
+            document.getElementById('verbalOverlay').classList.remove('active');
+            document.getElementById('adConfirmOverlay').style.display = 'flex';
+        }
+
+        // ==========================================
+        //      AD CLAIM LOGIC (WINNING AD)
+        // ==========================================
+        let isClaiming = false;
+        window.claimReward = function() {
+            if(isClaiming) return;
+            isClaiming = true;
+
+            window.open(DIRECT_AD_LINK, '_blank');
+
+            // WAIT LOADER
+            document.getElementById('adLoaderBox').style.display = 'block';
+            const bar = document.getElementById('adLoader');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 1; 
+                bar.style.width = width + '%';
+                
+                if (width >= 100) {
+                    clearInterval(interval);
+                    saveDataToFirebase();
+                }
+            }, 100); 
+        };
+
+        async function saveDataToFirebase() {
             try {
                 const ts = firebase.firestore.FieldValue.serverTimestamp();
-                
-                // 1. Update User's last login
                 await db.collection('users').doc(currentUserUid).update({ 
                     lastLogin: ts,
                     lastGameWon: activeGameMode 
                 });
-
-                // 2. Add to Public Leaderboard (WITH MOBILE & TIME)
                 await db.collection('game_winners').add({
                     name: currentUserData.name,
                     mobile: currentUserData.mobile, 
@@ -532,8 +508,7 @@
                     wonAt: ts 
                 });
                 
-                document.getElementById('memoryOverlay').classList.remove('active');
-                document.getElementById('verbalOverlay').classList.remove('active');
+                document.getElementById('adConfirmOverlay').style.display = 'none';
                 showLeaderboard(); 
             } catch (e) { console.error(e); alert("Won, but error saving data."); }
         }
@@ -547,91 +522,94 @@
         }
 
         // ==========================================
-        //         GAME 1: VISUAL MEMORY (CARDS)
+        //         GAME 1: VISUAL MEMORY
         // ==========================================
         let memTimerInterval;
         
         window.startMemoryGame = function() {
-            activeGameMode = 'Visual Memory (1000 TK Win)'; 
-            gameStartTime = Date.now(); // START SECURE TIMER
+            // *** PAUSE GAME UNTIL AD IS SEEN ***
+            waitForAd(() => {
+                // -- ACTUAL GAME START LOGIC --
+                activeGameMode = 'Visual Memory (500 TK Win)'; 
+                gameStartTime = Date.now(); // Start timer NOW
 
-            document.getElementById('selectionOverlay').classList.remove('active');
-            document.getElementById('memoryOverlay').classList.add('active');
-            
-            const gameGrid = document.getElementById('gameGrid');
-            const timerDisplay = document.getElementById('memTimer');
-            let matchedPairs = 0, firstCard, secondCard;
-            let hasFlippedCard = false, lockBoard = false;
-            let wrongGuessCards = new Set();
-            let consecutiveWrong = 0;
+                document.getElementById('selectionOverlay').classList.remove('active');
+                document.getElementById('memoryOverlay').classList.add('active');
+                
+                const gameGrid = document.getElementById('gameGrid');
+                const timerDisplay = document.getElementById('memTimer');
+                let matchedPairs = 0, firstCard, secondCard;
+                let hasFlippedCard = false, lockBoard = false;
+                let wrongGuessCards = new Set();
+                let consecutiveWrong = 0;
 
-            const emojis = ['🚀','🌙','⭐','🍎','🚗','🎈','🐱','🐶','🐸','🐼','🐯','🦁','⚽','🏀','🎾','🎱',
-                            '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
-            const deck = [...emojis, ...emojis];
-            
-            // Shuffle
-            for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
-            
-            gameGrid.innerHTML = '';
-            deck.forEach(emoji => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.innerHTML = `<div class="card-inner"><div class="card-front">?</div><div class="card-back">${emoji}</div></div>`;
-                card.addEventListener('click', flipCard);
-                gameGrid.appendChild(card);
-            });
+                const emojis = ['🚀','🌙','⭐','🍎','🚗','🎈','🐱','🐶','🐸','🐼','🐯','🦁','⚽','🏀','🎾','🎱',
+                                '🍕','🍔','🍟','🍦','🍩','🍪','🍫','🍬','🎨','🎭','🎪','🎢','🎡','🎬','🎤','🎧'];
+                const deck = [...emojis, ...emojis];
+                
+                for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+                
+                gameGrid.innerHTML = '';
+                deck.forEach(emoji => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.innerHTML = `<div class="card-inner"><div class="card-front">?</div><div class="card-back">${emoji}</div></div>`;
+                    card.addEventListener('click', flipCard);
+                    gameGrid.appendChild(card);
+                });
 
-            let timer = 300; // 5 mins
-            clearInterval(memTimerInterval);
-            memTimerInterval = setInterval(() => {
-                let m = parseInt(timer / 60, 10);
-                let s = parseInt(timer % 60, 10);
-                timerDisplay.textContent = (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
-                if (--timer < 0) {
-                    clearInterval(memTimerInterval);
-                    showMessage("Time Up!", "better luck next time.", "RETRY");
+                let timer = 300; 
+                clearInterval(memTimerInterval);
+                memTimerInterval = setInterval(() => {
+                    let m = parseInt(timer / 60, 10);
+                    let s = parseInt(timer % 60, 10);
+                    timerDisplay.textContent = (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
+                    if (--timer < 0) {
+                        clearInterval(memTimerInterval);
+                        showMessage("Time Up!", "better luck next time.", "RETRY");
+                    }
+                }, 800);
+
+                function flipCard() {
+                    if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
+                    this.classList.add('flipped');
+                    if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
+                    secondCard = this;
+                    checkForMatch();
                 }
-            }, 800);
 
-            function flipCard() {
-                if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
-                this.classList.add('flipped');
-                if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
-                secondCard = this;
-                checkForMatch();
-            }
-
-            function checkForMatch() {
-                let isMatch = firstCard.querySelector('.card-back').innerText === secondCard.querySelector('.card-back').innerText;
-                if (isMatch) {
-                    consecutiveWrong = 0; wrongGuessCards.clear();
-                    firstCard.removeEventListener('click', flipCard);
-                    secondCard.removeEventListener('click', flipCard);
-                    firstCard.classList.add('matched'); secondCard.classList.add('matched');
-                    matchedPairs++;
-                    resetBoard();
-                    if (matchedPairs === 32) { clearInterval(memTimerInterval); gameWon(); }
-                } else {
-                    consecutiveWrong++;
-                    wrongGuessCards.add(firstCard); wrongGuessCards.add(secondCard);
-                    lockBoard = true;
-                    setTimeout(() => {
-                        firstCard.classList.remove('flipped');
-                        secondCard.classList.remove('flipped');
-                        if (matchedPairs >= 10 && consecutiveWrong >= 3) {
-                             const arr = Array.from(wrongGuessCards);
-                             arr.forEach(c => c.classList.remove('flipped'));
-                             wrongGuessCards.clear(); consecutiveWrong = 0;
-                        }
+                function checkForMatch() {
+                    let isMatch = firstCard.querySelector('.card-back').innerText === secondCard.querySelector('.card-back').innerText;
+                    if (isMatch) {
+                        consecutiveWrong = 0; wrongGuessCards.clear();
+                        firstCard.removeEventListener('click', flipCard);
+                        secondCard.removeEventListener('click', flipCard);
+                        firstCard.classList.add('matched'); secondCard.classList.add('matched');
+                        matchedPairs++;
                         resetBoard();
-                    }, 1000);
+                        if (matchedPairs === 32) { clearInterval(memTimerInterval); gameWon(); }
+                    } else {
+                        consecutiveWrong++;
+                        wrongGuessCards.add(firstCard); wrongGuessCards.add(secondCard);
+                        lockBoard = true;
+                        setTimeout(() => {
+                            firstCard.classList.remove('flipped');
+                            secondCard.classList.remove('flipped');
+                            if (matchedPairs >= 10 && consecutiveWrong >= 3) {
+                                    const arr = Array.from(wrongGuessCards);
+                                    arr.forEach(c => c.classList.remove('flipped'));
+                                    wrongGuessCards.clear(); consecutiveWrong = 0;
+                            }
+                            resetBoard();
+                        }, 1000);
+                    }
                 }
-            }
-            function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
+                function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
+            });
         }
 
         // ==========================================
-        //         GAME 2: VERBAL MEMORY (WORDS)
+        //         GAME 2: VERBAL MEMORY
         // ==========================================
         const dictionary = [
             { en: "Ambiguous", bn: "অস্পষ্ট" }, { en: "Benevolent", bn: "পরোপকারী" },
@@ -668,27 +646,32 @@
         let vIsProcessing = false;
 
         window.startVerbalGame = function() {
-            activeGameMode = 'Verbal Memory (500 TK Win)'; 
-            document.getElementById('selectionOverlay').classList.remove('active');
-            document.getElementById('verbalOverlay').classList.add('active');
-            
-            document.getElementById('vStartScreen').classList.remove('v-hidden');
-            document.getElementById('vEndScreen').classList.add('v-hidden');
+            // *** MENU -> LOBBY AD ***
+            waitForAd(() => {
+                activeGameMode = 'Verbal Memory (1000 TK Win)'; 
+                document.getElementById('selectionOverlay').classList.remove('active');
+                document.getElementById('verbalOverlay').classList.add('active');
+                document.getElementById('vStartScreen').classList.remove('v-hidden');
+                document.getElementById('vEndScreen').classList.add('v-hidden');
+            });
         }
 
         window.initVerbalGame = function() {
-            vScore = 0;
-            vLives = 3;
-            vSeenIndices = [];
-            gameStartTime = Date.now(); // START SECURE TIMER
+            // *** LOBBY/RETRY -> GAMEPLAY AD ***
+            waitForAd(() => {
+                vScore = 0;
+                vLives = 3;
+                vSeenIndices = [];
+                gameStartTime = Date.now(); // Start timer NOW
 
-            document.getElementById('vStartScreen').classList.add('v-hidden');
-            document.getElementById('vEndScreen').classList.add('v-hidden');
-            document.getElementById('vLives').innerHTML = "❤❤❤";
-            document.getElementById('vScore').innerText = vScore;
-            
-            enableVerbalButtons(true);
-            nextVerbalTurn();
+                document.getElementById('vStartScreen').classList.add('v-hidden');
+                document.getElementById('vEndScreen').classList.add('v-hidden');
+                document.getElementById('vLives').innerHTML = "❤❤❤";
+                document.getElementById('vScore').innerText = vScore;
+                
+                enableVerbalButtons(true);
+                nextVerbalTurn();
+            });
         }
 
         function nextVerbalTurn() {
@@ -698,7 +681,6 @@
             document.getElementById('vMeaningDisplay').style.opacity = '0';
             resetVerbalTimer();
 
-            // 40% Chance to show OLD word
             const showSeen = vSeenIndices.length > 0 && Math.random() < 0.4;
             let index;
 
@@ -760,7 +742,6 @@
             const baseTime = 2500;
             const dropRate = 40; 
             const minTime = 700;
-            
             const totalTime = Math.max(minTime, baseTime - (vScore * dropRate)); 
             
             const timerBar = document.getElementById('vTimerBar');
