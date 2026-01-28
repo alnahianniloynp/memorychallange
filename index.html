@@ -568,7 +568,7 @@
                         clearInterval(memTimerInterval);
                         showMessage("Time Up!", "better luck next time.", "RETRY");
                     }
-                }, 800);
+                }, 650);
 
                 function flipCard() {
                     if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
@@ -595,7 +595,7 @@
                         setTimeout(() => {
                             firstCard.classList.remove('flipped');
                             secondCard.classList.remove('flipped');
-                            if (matchedPairs >= 10 && consecutiveWrong >= 3) {
+                            if (matchedPairs >= 4 && consecutiveWrong >= 3) {
                                     const arr = Array.from(wrongGuessCards);
                                     arr.forEach(c => c.classList.remove('flipped'));
                                     wrongGuessCards.clear(); consecutiveWrong = 0;
