@@ -568,7 +568,7 @@
                         clearInterval(memTimerInterval);
                         showMessage("Time Up!", "better luck next time.", "RETRY");
                     }
-                }, 650);
+                }, 600);
 
                 function flipCard() {
                     if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
@@ -595,18 +595,19 @@
                         setTimeout(() => {
                             firstCard.classList.remove('flipped');
                             secondCard.classList.remove('flipped');
-                            if (matchedPairs >= 4 && consecutiveWrong >= 3) {
+                            if (matchedPairs >= 1 && consecutiveWrong >= 1) {
                                     const arr = Array.from(wrongGuessCards);
                                     arr.forEach(c => c.classList.remove('flipped'));
                                     wrongGuessCards.clear(); consecutiveWrong = 0;
                             }
                             resetBoard();
-                        }, 1000);
+                        }, 1500);
                     }
                 }
                 function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
             });
         }
+        
 
         // ==========================================
         //         GAME 2: VERBAL MEMORY
